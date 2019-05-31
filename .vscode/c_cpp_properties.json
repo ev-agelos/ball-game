@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "Win64",
+            "includePath": [
+                "F:/raylib_64/include",
+                "${workspaceRoot}/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "GRAPHICS_API_OPENGL_33",
+                "PLATFORM_DESKTOP"
+            ],
+            "compilerPath": "F:/Mingw/mingw64/bin/x86_64-w64-mingw32-g++.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64",
+            "browse": {
+                "path": [
+                    "/usr/local/include",
+                    "${workspaceRoot}/**"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
+        }
+    ],
+    "version": 4
+}
