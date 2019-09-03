@@ -144,17 +144,16 @@ void Player::update(Ball & ball)
     handle_movement_control(ball);
 
     if (IsKeyDown(KEY_S) && power < 100)
-        power += 1;
+        power += 5;
     
     if (IsKeyReleased(KEY_S))
     {
         if (has_ball)
         {
-            //Vector2 direction_in;
-            //direction_in.x = power * direction.x;
-            //direction_in.y = power * direction.y;
-            //ball.kick(direction_in, 0.1);
+            ball.roll(*this, power);
+            has_ball = false;
         }
         power = 0;
     }
+
 }
