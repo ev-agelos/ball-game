@@ -107,7 +107,7 @@ void Player::handle_movement_control(Ball & ball)
         return;
     }
 
-    // Controls the ball
+    // User controls the ball
     if (direction.x == 0 and direction.y == 0)  // no input so roll with the ball
     {
         set_velocity();
