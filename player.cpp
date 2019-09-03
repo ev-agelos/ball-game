@@ -115,33 +115,24 @@ void Player::handle_movement_control(Ball & ball)
     }
     else if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
     {
-
-        // set_velocity();
+        // Avoid the slow down when changing to opposite direction
+        if (dot_product(direction, ball.direction) == -1)
+        {
+            velocity.x *= -1;
+            velocity.y *= -1;
+        }
         ball.roll(*this, 3);
     }
     else
     {
-        std::cout << velocity.x << "\n";
         if (dot_product(direction, ball.direction) == -1)
         {
-            std::cout << "!\n";
-            if (ball.velocity.x > 0)
-                direction.x = 1;
-            else if (ball.velocity.x < 0)
-                direction.x = -1;
-
-            if (ball.velocity.y > 0)
-                direction.y = 1;
-            else if (ball.velocity.y < 0)
-                direction.y = -1;
-            set_velocity();
+            direction.x = ball.direction.x;
+            direction.y = ball.direction.y;
         }
-        // else
-        // {
-        //     if (direction.x == -1)
-        //         velocity.x *= direction.x;
-        //     velocity.y *= direction.y;
-        // }
+        set_velocity();
+
+        // Follow the ball
         float speed = std::max(abs(velocity.x), abs(velocity.y));
         update_pos({ball.direction.x*speed, ball.direction.y*speed});
     }
