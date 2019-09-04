@@ -22,6 +22,9 @@ Ball::Ball()
 
 void Ball::set_x(float val)
 {
+    if (((val - radius) <= 0) || ((val + radius) >= SCREENWIDTH))
+        velocity.x *= -1;
+
     if ((val - radius) >= 0 && (val + radius) <= SCREENWIDTH)
         position.x = val;
 }
@@ -29,6 +32,9 @@ void Ball::set_x(float val)
 
 void Ball::set_y(float val)
 {
+    if (((val - radius) <= 0) || ((val + radius) >= SCREENHEIGHT))
+        velocity.y *= -1;
+
     if ((val - radius) >= 0 && (val + radius) <= SCREENHEIGHT)
         position.y = val;
 }
