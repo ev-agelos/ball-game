@@ -63,10 +63,24 @@ void Ball::roll(const Player & p, float power)
     float player_center_x = p.rec.x + p.rec.width/2;
     float player_center_y = p.rec.y + p.rec.height/2;
     direction = normalize_vector(p.direction);
-    set_x(player_center_x + direction.x*(player_radius + radius));
-    set_y(player_center_y + direction.y*(player_radius + radius));
-    velocity.x = direction.x * power;
-    velocity.y = direction.y * power;
+    float new_x, new_y;
+    if (p.direction.x == 0 && p.direction.y == 0)
+    {
+        float dx = position.x - p.rec.x;
+        float dy = position.y - p.rec.y;
+        float magnitude = std::sqrt(dx*dx + dy*dy);
+        new_x = dx / magnitude;
+        new_y = dy / magnitude;
+    }
+    else
+    {
+        new_x = direction.x;
+        new_y = direction.y;
+        set_x(player_center_x + new_x*(player_radius + radius));
+        set_y(player_center_y + new_y*(player_radius + radius));
+    }
+    velocity.x = new_x * power;
+    velocity.y = new_y * power;
 
     PlaySound(kick_sound);
 }
