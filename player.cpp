@@ -144,7 +144,7 @@ void Player::update(Ball & ball)
     handle_movement_control(ball);
 
     if (IsKeyDown(KEY_S) && power < 100)
-        power += 5;
+        power += 1;
     
     if (IsKeyReleased(KEY_S))
     {
