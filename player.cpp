@@ -136,6 +136,11 @@ void Player::handle_movement_control(Ball & ball)
         float speed = std::max(abs(velocity.x), abs(velocity.y));
         update_pos({ball.direction.x*speed, ball.direction.y*speed});
     }
+
+    Vector2 norm_velocity = normalize_vector(velocity);
+    Vector2 norm_ball_velocity = normalize_vector(ball.velocity);
+    if (dot_product(norm_velocity, norm_ball_velocity) < 0.5)
+        has_ball = false;
 }
 
 
