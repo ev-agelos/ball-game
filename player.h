@@ -23,6 +23,5 @@ public:
     Vector2 direction;
     Vector2 velocity;
     int power;
-    bool has_ball;
     void update(Ball & ball);
 };

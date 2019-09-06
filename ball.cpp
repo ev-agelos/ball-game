@@ -22,8 +22,12 @@ Ball::Ball()
 
 void Ball::set_x(float val)
 {
+    // check if hit vertical wall
     if (((val - radius) <= 0) || ((val + radius) >= SCREENWIDTH))
+    {
         velocity.x *= -1;
+        controlled_by = NULL;
+    }
 
     if ((val - radius) >= 0 && (val + radius) <= SCREENWIDTH)
         position.x = val;
@@ -32,20 +36,23 @@ void Ball::set_x(float val)
 
 void Ball::set_y(float val)
 {
+    // check if hit horizontal wall
     if (((val - radius) <= 0) || ((val + radius) >= SCREENHEIGHT))
+    {
         velocity.y *= -1;
+        controlled_by = NULL;
+    }
 
     if ((val - radius) >= 0 && (val + radius) <= SCREENHEIGHT)
         position.y = val;
 }
 
 
-void Ball::update(Player & p, Bot & bot)
+void Ball::update()
 {
     if (velocity.x == 0 && velocity.y == 0)
         return;
 
-    //if (velocity.x)
     set_x(position.x + velocity.x);
     velocity.x *= deceleration_factor;
 
@@ -65,11 +72,9 @@ void Ball::update(Player & p, Bot & bot)
 void Ball::roll(const Player & p, float power)
 {
     // set the ball's position relative to player before kicking it
-    float player_radius = sqrt(p.rec.width*p.rec.width + p.rec.height*p.rec.height) / 2;
-    float player_center_x = p.rec.x + p.rec.width/2;
-    float player_center_y = p.rec.y + p.rec.height/2;
-    direction = normalize_vector(p.direction);
     float new_x, new_y;
+    direction.x = p.direction.x;
+    direction.y = p.direction.y;
     if (p.direction.x == 0 && p.direction.y == 0)
     {
         float dx = position.x - p.rec.x;
@@ -80,8 +85,11 @@ void Ball::roll(const Player & p, float power)
     }
     else
     {
-        new_x = direction.x;
-        new_y = direction.y;
+        float player_radius = std::sqrt(p.rec.width*p.rec.width + p.rec.height*p.rec.height) / 2;
+        float player_center_x = p.rec.x + p.rec.width/2;
+        float player_center_y = p.rec.y + p.rec.height/2;
+        new_x = p.direction.x;
+        new_y = p.direction.y;
         set_x(player_center_x + new_x*(player_radius + radius));
         set_y(player_center_y + new_y*(player_radius + radius));
     }
@@ -94,18 +102,8 @@ void Ball::roll(const Player & p, float power)
 
 void Ball::check_collision(Player & p, Bot & bot)
 {
-    //if (CheckCollisionCircleRec(position, radius, {p.position.x, p.position.y, p.size.x, p.size.y}))
-    //{
-    //    direction.x = 0;
-    //    direction.y = 0;
-    //}
-    //else if (!bot.has_ball && CheckCollisionCircleRec(position, radius, {bot.position.x, bot.position.y, bot.size.x, bot.size.y}))
-    //{
-    //    direction.x = 0;
-    //    direction.y = 0;
-    //    p.has_ball = false;
-    //    bot.has_ball = true;
-    //}
-
-    // TODO check collisions with walls and set the ball to stop or outside or bounce
+    if (CheckCollisionCircleRec(position, radius, {p.rec.x, p.rec.y, p.rec.width, p.rec.height}))
+        controlled_by = &p;
+    else if (controlled_by != &bot && CheckCollisionCircleRec(position, radius, {bot.rec.x, bot.rec.y, bot.rec.width, bot.rec.height}))
+       controlled_by = &bot;
 }

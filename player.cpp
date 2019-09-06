@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <time.h>
+#include <math.h>
 #include <raylib.h>
 #include "player.h"
 #include "ball.h"
@@ -18,8 +19,7 @@ Player::Player(float x, float y)
     velocity({0, 0}),
     rec({x, y, 20.f, 20.f}),
     direction({0, 0}),
-    power(0),
-    has_ball(false)
+    power(0)
 {
 }
 
@@ -93,7 +93,7 @@ void Player::set_velocity()
 void Player::handle_movement_control(Ball & ball)
 {
     set_direction();
-    if (!has_ball)
+    if (ball.controlled_by != this)
     {
         // normal movement
         set_velocity();
@@ -102,7 +102,7 @@ void Player::handle_movement_control(Ball & ball)
         {
             // "take" control of the ball
             ball.roll(*this, 3);
-            has_ball = true;
+            ball.controlled_by = this;
         }
         return;
     }
@@ -115,32 +115,24 @@ void Player::handle_movement_control(Ball & ball)
     }
     else if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
     {
+        ball.roll(*this, 3);
         // Avoid the slow down when changing to opposite direction
         if (dot_product(direction, ball.direction) == -1)
         {
             velocity.x *= -1;
             velocity.y *= -1;
         }
-        ball.roll(*this, 3);
     }
     else
     {
-        if (dot_product(direction, ball.direction) == -1)
-        {
-            direction.x = ball.direction.x;
-            direction.y = ball.direction.y;
-        }
+        direction.x = ball.direction.x;
+        direction.y = ball.direction.y;
         set_velocity();
 
         // Follow the ball
         float speed = std::max(abs(velocity.x), abs(velocity.y));
         update_pos({ball.direction.x*speed, ball.direction.y*speed});
     }
-
-    Vector2 norm_velocity = normalize_vector(velocity);
-    Vector2 norm_ball_velocity = normalize_vector(ball.velocity);
-    if (dot_product(norm_velocity, norm_ball_velocity) < 0.5)
-        has_ball = false;
 }
 
 
@@ -153,10 +145,10 @@ void Player::update(Ball & ball)
     
     if (IsKeyReleased(KEY_S))
     {
-        if (has_ball)
+        if (ball.controlled_by == this)
         {
             ball.roll(*this, power);
-            has_ball = false;
+            ball.controlled_by = NULL;
         }
         power = 0;
     }

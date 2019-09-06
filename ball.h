@@ -18,8 +18,9 @@ public:
     void set_x(float val);
     void set_y(float val);
     Vector2 velocity;
+    Player* controlled_by;
     void roll(const Player & p, float power);
-    void update(Player & p, Bot & bot);
+    void update();
     void check_collision(Player & p, Bot & bot);
     Sound kick_sound;
 };

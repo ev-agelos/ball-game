@@ -33,7 +33,7 @@ int main()
         bot.update(ball, p1);
 
         ball.check_collision(p1, bot);
-        ball.update(p1, bot);
+        ball.update();
 
         draw(p1, bot, ball);
 	}
