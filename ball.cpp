@@ -71,30 +71,21 @@ void Ball::update()
 
 void Ball::roll(const Player & p, float power)
 {
-    // set the ball's position relative to player before kicking it
-    float new_x, new_y;
+    // set ball's direction the one that player points to
     direction.x = p.direction.x;
     direction.y = p.direction.y;
-    if (p.direction.x == 0 && p.direction.y == 0)
-    {
-        float dx = position.x - p.rec.x;
-        float dy = position.y - p.rec.y;
-        float magnitude = std::sqrt(dx*dx + dy*dy);
-        new_x = dx / magnitude;
-        new_y = dy / magnitude;
-    }
-    else
-    {
-        float player_radius = std::sqrt(p.rec.width*p.rec.width + p.rec.height*p.rec.height) / 2;
-        float player_center_x = p.rec.x + p.rec.width/2;
-        float player_center_y = p.rec.y + p.rec.height/2;
-        new_x = p.direction.x;
-        new_y = p.direction.y;
-        set_x(player_center_x + new_x*(player_radius + radius));
-        set_y(player_center_y + new_y*(player_radius + radius));
-    }
-    velocity.x = new_x * power;
-    velocity.y = new_y * power;
+    Vector2 norm_direction = normalize_vector(direction);
+    float player_center_x = p.rec.x + p.rec.width/2;
+    float player_center_y = p.rec.y + p.rec.height/2;
+
+    // set the ball's position relative to player update and then "kick" it
+    float player_radius = std::sqrt(p.rec.width*p.rec.width + p.rec.height*p.rec.height) / 2;
+    velocity.x = (player_center_x - position.x) + norm_direction.x * (player_radius + radius);
+    velocity.y = (player_center_y - position.y) + norm_direction.y * (player_radius + radius);
+    update();
+
+    velocity.x = norm_direction.x*power;
+    velocity.y = norm_direction.y*power;
 
     PlaySound(kick_sound);
 }
