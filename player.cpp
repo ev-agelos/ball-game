@@ -131,7 +131,8 @@ void Player::handle_movement_control(Ball & ball)
 
         // Follow the ball
         float speed = std::max(abs(velocity.x), abs(velocity.y));
-        update_pos({ball.direction.x*speed, ball.direction.y*speed});
+        Vector2 norm_direction = normalize_vector(direction);
+        update_pos({norm_direction.x*speed, norm_direction.y*speed});
     }
 }
 
