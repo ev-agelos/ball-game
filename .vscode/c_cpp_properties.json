@@ -3,7 +3,7 @@
         {
             "name": "Win64",
             "includePath": [
-                "F:/raylib_64/include",
+                "F:/raylib-2.5.0-Win64-mingw/include",
                 "${workspaceRoot}/**"
             ],
             "defines": [
