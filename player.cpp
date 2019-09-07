@@ -149,7 +149,7 @@ void Player::update(Ball & ball)
         if (ball.controlled_by == this)
         {
             ball.roll(*this, power);
-            ball.controlled_by = NULL;
+            ball.controlled_by = nullptr;
         }
         power = 0;
     }
