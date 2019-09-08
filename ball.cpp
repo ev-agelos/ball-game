@@ -6,15 +6,17 @@
 #include "bot.h"
 #include "utils.h"
 
-extern const int SCREENWIDTH;
-extern const int SCREENHEIGHT;
+extern const int UPPER_BOUND;
+extern const int LOWER_BOUND;
+extern const int LEFT_BOUND;
+extern const int RIGHT_BOUND;
 
 
 Ball::Ball()
     :
     deceleration_factor(0.97),
     radius(5.f),
-    position({ SCREENWIDTH / 2.f, SCREENHEIGHT / 2.f }),
+    position({ ((RIGHT_BOUND - LEFT_BOUND) / 2.f) + LEFT_BOUND, ((LOWER_BOUND - UPPER_BOUND) / 2.f) + UPPER_BOUND }),
     velocity({ 0, 0 })
 {
 }
@@ -23,13 +25,13 @@ Ball::Ball()
 void Ball::set_x(float val)
 {
     // check if hit vertical wall
-    if (((val - radius) <= 0) || ((val + radius) >= SCREENWIDTH))
+    if (((val - radius) <= LEFT_BOUND) || ((val + radius) >= RIGHT_BOUND))
     {
         velocity.x *= -1;
         controlled_by = nullptr;
     }
 
-    if ((val - radius) >= 0 && (val + radius) <= SCREENWIDTH)
+    if ((val - radius) >= LEFT_BOUND && (val + radius) <= RIGHT_BOUND)
         position.x = val;
 }
 
@@ -37,13 +39,13 @@ void Ball::set_x(float val)
 void Ball::set_y(float val)
 {
     // check if hit horizontal wall
-    if (((val - radius) <= 0) || ((val + radius) >= SCREENHEIGHT))
+    if (((val - radius) <= UPPER_BOUND) || ((val + radius) >= LOWER_BOUND))
     {
         velocity.y *= -1;
         controlled_by = nullptr;
     }
 
-    if ((val - radius) >= 0 && (val + radius) <= SCREENHEIGHT)
+    if ((val - radius) >= UPPER_BOUND && (val + radius) <= LOWER_BOUND)
         position.y = val;
 }
 

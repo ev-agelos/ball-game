@@ -7,8 +7,10 @@
 #include "ball.h"
 #include "utils.h"
 
-extern const int SCREENWIDTH;
-extern const int SCREENHEIGHT;
+extern const int UPPER_BOUND;
+extern const int LOWER_BOUND;
+extern const int LEFT_BOUND;
+extern const int RIGHT_BOUND;
 
 
 Player::Player(float x, float y)
@@ -27,11 +29,11 @@ Player::Player(float x, float y)
 void Player::update_pos(const Vector2 &v)
 {
     float new_x = rec.x + v.x;
-    if (new_x >= 0 && (new_x + rec.width) <= SCREENWIDTH)
+    if (new_x >= LEFT_BOUND && (new_x + rec.width) <= RIGHT_BOUND)
         rec.x = new_x;
 
     float new_y = rec.y + v.y;
-    if (new_y >= 0 && (new_y + rec.height) <= SCREENHEIGHT)
+    if (new_y >= UPPER_BOUND && (new_y + rec.height) <= LOWER_BOUND)
         rec.y = new_y;
 }
 

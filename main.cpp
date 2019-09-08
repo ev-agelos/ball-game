@@ -7,8 +7,12 @@
 #include "bot.h"
 #include "ball.h"
 
-extern const int SCREENWIDTH = 800;
-extern const int SCREENHEIGHT = 450;
+const int SCREENWIDTH = 800;
+const int SCREENHEIGHT = 450;
+extern const int UPPER_BOUND = 20;
+extern const int LOWER_BOUND = SCREENHEIGHT - UPPER_BOUND;
+extern const int LEFT_BOUND = 20;
+extern const int RIGHT_BOUND = SCREENWIDTH - LEFT_BOUND;
 
 void draw(Player & p, Bot & bot, Ball & ball);
 std::tuple<float, float> random_pos(int min_x, int max_x);
@@ -21,8 +25,8 @@ int main()
 	SetTargetFPS(60);
     Sound kick_sound = LoadSound("media/sounds/ballsound.wav");
 
-    auto [player_x, player_y] = random_pos(0, SCREENWIDTH/2);
-    auto [bot_x, bot_y] = random_pos(SCREENWIDTH/2, SCREENWIDTH);
+    auto [player_x, player_y] = random_pos(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND);
+    auto [bot_x, bot_y] = random_pos(RIGHT_BOUND - ((RIGHT_BOUND - LEFT_BOUND) / 2), RIGHT_BOUND);
     Player p1(player_x, player_y);
     Bot bot(bot_x, bot_y);
     Ball ball;
@@ -91,6 +95,6 @@ void draw(Player & p, Bot & bot, Ball & ball)
 std::tuple<float, float> random_pos(int min_x, int max_x)
 {
     int x = GetRandomValue(min_x, max_x / 2);
-    int y = GetRandomValue(0, SCREENHEIGHT - 20);  // fix this
+    int y = GetRandomValue(UPPER_BOUND, LOWER_BOUND);
     return std::make_tuple((float)x, (float)y);
 }

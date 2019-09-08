@@ -2,8 +2,9 @@
 #include "bot.h"
 #include "ball.h"
 
-extern const int SCREENWIDTH;
-extern const int SCREENHEIGHT;
+extern const int LEFT_BOUND;
+extern const int RIGHT_BOUND;
+
 
 
 Bot::Bot(float in_x, float in_y) : Player(in_x, in_y)
@@ -25,7 +26,7 @@ void Bot::update(Ball &ball, Player &p)
 
     //if (ball.direction.x <= 0)
     //{
-    //    if (position.x > SCREENWIDTH/2  && ((ball.position.x + ball.radius) < position.x))
+    //    if (position.x > ((RIGHT_BOUND - LEFT_BOUND)/2 + LEFT_BOUND)  && ((ball.position.x + ball.radius) < position.x))
     //        set_x(position.x - movement_speed);
     //}
     //else
