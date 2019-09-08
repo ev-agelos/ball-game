@@ -110,10 +110,11 @@ void Player::handle_movement_control(Ball & ball)
     }
 
     // User controls the ball
-    if (direction.x == 0 and direction.y == 0)  // no input so roll with the ball
+    if (direction.x == 0 and direction.y == 0)  // no input so keep ball's direction
     {
         set_velocity();
-        update_pos(ball.velocity);
+        direction.x = ball.direction.x;
+        direction.y = ball.direction.y;
     }
     else if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
     {
