@@ -49,18 +49,41 @@ void draw(Player & p, Bot & bot, Ball & ball)
 {
     BeginDrawing();
     ClearBackground(BLACK);
+
+    // players and ball
     DrawRectangleRec(p.rec, GREEN);
     DrawRectangleRec(bot.rec, BLUE);
     DrawCircleV(ball.position, ball.radius, RAYWHITE);
 
     // power bars
-    DrawRectangle(50, SCREENHEIGHT - 30, 100, 12, LIGHTGRAY);
-    DrawRectangle(50, SCREENHEIGHT - 30, p.power, 12, MAROON);
-    DrawRectangleLines(50, SCREENHEIGHT - 30, 100, 12, GRAY);
+    DrawRectangle(50, SCREENHEIGHT - 15, 100, 12, LIGHTGRAY);
+    DrawRectangle(50, SCREENHEIGHT - 15, p.power, 12, MAROON);
+    DrawRectangleLines(50, SCREENHEIGHT - 15, 100, 12, GRAY);
 
-    DrawRectangle(SCREENWIDTH - (30 + 100), SCREENHEIGHT - 30, 100, 12, LIGHTGRAY);
-    DrawRectangle(SCREENWIDTH - (30 + 100), SCREENHEIGHT - 30, bot.power, 12, MAROON);
-    DrawRectangleLines(SCREENWIDTH - (30 + 100), SCREENHEIGHT - 30, 100, 12, GRAY);
+    DrawRectangle(SCREENWIDTH - (30 + 100), SCREENHEIGHT - 15, 100, 12, LIGHTGRAY);
+    DrawRectangle(SCREENWIDTH - (30 + 100), SCREENHEIGHT - 15, bot.power, 12, MAROON);
+    DrawRectangleLines(SCREENWIDTH - (30 + 100), SCREENHEIGHT - 15, 100, 12, GRAY);
+
+    // posts
+    int goalpost_thickness = 10;
+    float goalpost_height_start = SCREENHEIGHT / 2 - 50;
+    float goalpost_height_end = SCREENHEIGHT / 2 + 50;
+
+    DrawRectangle(0, goalpost_height_start, 21, goalpost_thickness, GRAY);
+    DrawRectangle(0, goalpost_height_end, 21, goalpost_thickness, GRAY);
+    DrawRectangle(SCREENWIDTH - 22, goalpost_height_start, 21, goalpost_thickness, GRAY);
+    DrawRectangle(SCREENWIDTH - 22, goalpost_height_end, 21, goalpost_thickness, GRAY);
+
+    // field borders
+    DrawLineEx(Vector2 {20, 20}, Vector2 {SCREENWIDTH-20, 20}, 3, GRAY);
+    DrawLineEx(Vector2 {20, SCREENHEIGHT - 20}, Vector2 {SCREENWIDTH - 20, SCREENHEIGHT - 20}, 3, GRAY);
+
+    DrawLineEx(Vector2 {20, 20}, Vector2 {20, goalpost_height_start}, 3, GRAY);
+    DrawLineEx(Vector2 {SCREENWIDTH - 20, 20}, Vector2 {SCREENWIDTH - 20, goalpost_height_start}, 3, GRAY);
+
+    DrawLineEx(Vector2 {20, goalpost_height_end + goalpost_thickness}, Vector2 {20, SCREENHEIGHT - 20}, 3, GRAY);
+    DrawLineEx(Vector2 {SCREENWIDTH - 20, goalpost_height_end + goalpost_thickness}, Vector2 {SCREENWIDTH - 20, SCREENHEIGHT - 20}, 3, GRAY);
+
     EndDrawing();
 }
 
