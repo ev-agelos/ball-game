@@ -10,6 +10,9 @@ extern const int UPPER_BOUND;
 extern const int LOWER_BOUND;
 extern const int LEFT_BOUND;
 extern const int RIGHT_BOUND;
+extern const int GOALPOST_THICKNESS;
+extern const float GOALPOST_HEIGHT_START;
+extern const float GOALPOST_HEIGHT_END;
 
 
 Ball::Ball()
@@ -24,29 +27,29 @@ Ball::Ball()
 
 void Ball::set_x(float val)
 {
-    // check if hit vertical wall
+    // hit vertical wall or goal
     if (((val - radius) <= LEFT_BOUND) || ((val + radius) >= RIGHT_BOUND))
     {
-        velocity.x *= -1;
+        if (position.y < (GOALPOST_HEIGHT_START + GOALPOST_THICKNESS) || position.y > GOALPOST_HEIGHT_END)
+            velocity.x *= -1;
+        
         controlled_by = nullptr;
     }
 
-    if ((val - radius) >= LEFT_BOUND && (val + radius) <= RIGHT_BOUND)
-        position.x = val;
+    position.x = val;
 }
 
 
 void Ball::set_y(float val)
 {
-    // check if hit horizontal wall
+    // hit horizontal wall or goal
     if (((val - radius) <= UPPER_BOUND) || ((val + radius) >= LOWER_BOUND))
     {
         velocity.y *= -1;
         controlled_by = nullptr;
     }
 
-    if ((val - radius) >= UPPER_BOUND && (val + radius) <= LOWER_BOUND)
-        position.y = val;
+    position.y = val;
 }
 
 
