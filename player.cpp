@@ -112,9 +112,9 @@ void Player::handle_movement_control(Ball & ball)
     // User controls the ball
     if (direction.x == 0 and direction.y == 0)  // no input so keep ball's direction
     {
-        set_velocity();
         direction.x = ball.direction.x;
         direction.y = ball.direction.y;
+        set_velocity();
     }
     else if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
     {
@@ -128,14 +128,19 @@ void Player::handle_movement_control(Ball & ball)
     }
     else
     {
+        // keep player following ball cause he controls it
         direction.x = ball.direction.x;
         direction.y = ball.direction.y;
         set_velocity();
 
-        // Follow the ball
+        float player_center_x = rec.x + rec.width/2;
+        float player_center_y = rec.y + rec.height/2;
+        float dx = ball.position.x - player_center_x;
+        float dy = ball.position.y - player_center_y;
+        Vector2 player_ball_dir = normalize_vector({dx, dy});
+        // use same speed to avoid the curve
         float speed = std::max(abs(velocity.x), abs(velocity.y));
-        Vector2 norm_direction = normalize_vector(direction);
-        update_pos({norm_direction.x*speed, norm_direction.y*speed});
+        update_pos({player_ball_dir.x * speed, player_ball_dir.y * speed});
     }
 }
 
