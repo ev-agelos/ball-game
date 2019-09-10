@@ -27,29 +27,32 @@ Ball::Ball()
 
 void Ball::set_x(float val)
 {
-    // hit vertical wall or goal
-    if (((val - radius) <= LEFT_BOUND) || ((val + radius) >= RIGHT_BOUND))
+    // ball is in limits
+    if (((val - radius) > LEFT_BOUND) && ((val + radius) < RIGHT_BOUND))
     {
-        if (position.y < (GOALPOST_HEIGHT_START + GOALPOST_THICKNESS) || position.y > GOALPOST_HEIGHT_END)
-            velocity.x *= -1;
-        
-        controlled_by = nullptr;
+        position.x = val;
+        return;
     }
 
-    position.x = val;
+    // hit vertical wall or goal
+    if (position.y < (GOALPOST_HEIGHT_START + GOALPOST_THICKNESS) || position.y > GOALPOST_HEIGHT_END)
+        velocity.x *= -1;
+    
+    controlled_by = nullptr;
 }
 
 
 void Ball::set_y(float val)
 {
-    // hit horizontal wall or goal
-    if (((val - radius) <= UPPER_BOUND) || ((val + radius) >= LOWER_BOUND))
+    // ball is in limits
+    if (((val - radius) > UPPER_BOUND) && ((val + radius) < LOWER_BOUND))
     {
-        velocity.y *= -1;
-        controlled_by = nullptr;
+        position.y = val;
+        return;
     }
-
-    position.y = val;
+    // hit horizontal wall or goal
+    velocity.y *= -1;
+    controlled_by = nullptr;
 }
 
 
