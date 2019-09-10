@@ -98,14 +98,18 @@ void Player::handle_movement_control(Ball & ball)
     if (ball.controlled_by != this)
     {
         // normal movement
-        set_velocity();
-        update_pos(velocity);
         if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
         {
             // "take" control of the ball
             ball.roll(*this, 3);
             ball.controlled_by = this;
         }
+        else
+        {
+            set_velocity();
+            update_pos(velocity);
+        }
+        
         return;
     }
 
