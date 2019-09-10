@@ -4,8 +4,6 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "mingw32-make.exe",
-            "args": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -20,13 +18,25 @@
                 "panel": "shared",
                 "showReuseMessage": false,
                 "clear": true
+            },
+            "windows": {
+                "command": "mingw32-make.exe",
+                "args": [
+                    "INCLUDE_PATH=F:/raylib-2.5.0-Win64-mingw/include",
+                    "LIB_PATH=F:/raylib-2.5.0-Win64-mingw/lib"
+                ]
+            },
+            "linux": {
+                "command": "make",
+                "args": [
+                    "INCLUDE_PATH=/usr/include/raylib.h",
+                    "LIB_PATH=usr/lib/libraylib.so.2.5.0"
+                ]
             }
         },
         {
             "label": "clean",
             "type": "shell",
-            "command": "mingw32-make.exe",
-            "args": ["clean"],
             "presentation": {
                 "echo": true,
                 "reveal": "silent",
@@ -34,6 +44,18 @@
                 "panel": "shared",
                 "showReuseMessage": false,
                 "clear": true
+            },
+            "windows": {
+                "command": "mingw32-make.exe",
+                "args": [
+                    "clean"
+                ]
+            },
+            "linux": {
+                "command": "make",
+                "args": [
+                    "clean"
+                ]
             }
         }
     ]

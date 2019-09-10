@@ -11,18 +11,21 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "MIMode": "gdb",
             "windows": {
-                "MIMode": "gdb",
-                "miDebuggerPath": "F:/Mingw/mingw64/bin/gdb.exe",
-                "setupCommands": [
-                    {
-                        "description": "Enable pretty-printing for gdb",
-                        "text": "-enable-pretty-printing",
-                        "ignoreFailures": true
-                    }
-                ]
+                "miDebuggerPath": "F:/Mingw/mingw64/bin/gdb.exe"
             },
-            "preLaunchTask": "build",
+            "linux": {
+                "miDebuggerPath": "/usr/bin/gdb"
+            },
+            "preLaunchTask": "build"
         },
         {
             "name": "Run",
@@ -38,6 +41,9 @@
             "windows": {
                 "miDebuggerPath": "F:/Mingw/mingw64/bin/gdb.exe"
             },
+            "linux": {
+                "miDebuggerPath": "/usr/bin/gdb"
+            }
         }
     ]
 }
