@@ -34,10 +34,12 @@ void Ball::set_x(float val)
         return;
     }
 
-    // hit vertical wall or goal
+    // hit vertical wall else goal
     if (position.y < (GOALPOST_HEIGHT_START + GOALPOST_THICKNESS) || position.y > GOALPOST_HEIGHT_END)
         velocity.x *= -1;
-    
+    else
+        position.x = val;
+
     controlled_by = nullptr;
 }
 
