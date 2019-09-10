@@ -119,7 +119,7 @@ void Player::handle_movement_control(Ball & ball)
     {
         ball.roll(*this, 3);
         // Avoid the slow down when changing to opposite direction
-        if (dot_product(direction, ball.direction) == -1)
+        if (dot_product(velocity, ball.velocity) == -1)
         {
             velocity.x *= -1;
             velocity.y *= -1;
@@ -128,15 +128,15 @@ void Player::handle_movement_control(Ball & ball)
     else
     {
         // keep player following ball cause he controls it
-        direction.x = ball.direction.x;
-        direction.y = ball.direction.y;
-        set_velocity();
-
         float player_center_x = rec.x + rec.width/2;
         float player_center_y = rec.y + rec.height/2;
         float dx = ball.position.x - player_center_x;
         float dy = ball.position.y - player_center_y;
         Vector2 player_ball_dir = normalize_vector({dx, dy});
+        direction.x = player_ball_dir.x ? player_ball_dir.x/abs(player_ball_dir.x) : 0;
+        direction.y = player_ball_dir.y ? player_ball_dir.y/abs(player_ball_dir.y) : 0;
+        set_velocity();
+
         // use same speed to avoid the curve
         float speed = std::max(abs(velocity.x), abs(velocity.y));
         update_pos({player_ball_dir.x * speed, player_ball_dir.y * speed});

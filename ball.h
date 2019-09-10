@@ -14,7 +14,6 @@ public:
     float radius;
     Vector2 starting_position;
     Vector2 position;
-    Vector2 direction;
     void set_x(float val);
     void set_y(float val);
     Vector2 velocity;
