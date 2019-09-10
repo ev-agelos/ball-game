@@ -26,14 +26,14 @@ int main()
 	InitWindow(SCREENWIDTH, SCREENHEIGHT, "Passing Game");
     InitAudioDevice();
 	SetTargetFPS(60);
-    Sound kick_sound = LoadSound("media/sounds/ballsound.wav");
 
     auto [player_x, player_y] = random_pos(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND);
     auto [bot_x, bot_y] = random_pos(RIGHT_BOUND - ((RIGHT_BOUND - LEFT_BOUND) / 2), RIGHT_BOUND);
     Player p1(player_x, player_y);
+    p1.kick_sound = LoadSound("media/sounds/ballsound.wav");
     Bot bot(bot_x, bot_y);
     Ball ball;
-    ball.kick_sound = kick_sound;
+
 	while (!WindowShouldClose())
 	{
         p1.update(ball);
@@ -45,7 +45,7 @@ int main()
         draw(p1, bot, ball);
 	}
 
-    UnloadSound(kick_sound);
+    UnloadSound(p1.kick_sound);
     CloseAudioDevice();
 	CloseWindow();
 	return 0;

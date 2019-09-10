@@ -98,8 +98,6 @@ void Ball::roll(const Player & p, float power)
 
     velocity.x = kick_direction.x*power;
     velocity.y = kick_direction.y*power;
-
-    PlaySound(kick_sound);
 }
 
 

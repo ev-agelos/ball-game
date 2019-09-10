@@ -156,6 +156,7 @@ void Player::update(Ball & ball)
         if (ball.controlled_by == this)
         {
             ball.roll(*this, power);
+            PlaySound(kick_sound);
             ball.controlled_by = nullptr;
         }
         power = 0;

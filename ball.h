@@ -21,5 +21,4 @@ public:
     void roll(const Player & p, float power);
     void update();
     void check_collision(Player & p, Bot & bot);
-    Sound kick_sound;
 };

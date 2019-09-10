@@ -23,5 +23,6 @@ public:
     Vector2 direction;
     Vector2 velocity;
     int power;
+    Sound kick_sound;
     void update(Ball & ball);
 };
