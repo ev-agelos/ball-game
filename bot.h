@@ -7,6 +7,7 @@ class Ball;
 class Bot : public Player
 {
 public:
-    Bot(float in_x, float in_y);
+    Bot();
     void update(Ball & ball, Player &p);
+    void setup();
 };

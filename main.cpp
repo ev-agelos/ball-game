@@ -1,6 +1,4 @@
 #include <iostream>
-#include <tuple>
-#include <math.h>
 #include "raylib.h"
 
 #include "player.h"
@@ -22,7 +20,14 @@ extern const float GOALPOST_HEIGHT_START = SCREENHEIGHT / 2 - 50;
 extern const float GOALPOST_HEIGHT_END = SCREENHEIGHT / 2 + 50;
 
 void draw(Player & p, Bot & bot, Ball & ball);
-std::tuple<float, float> random_pos(int min_x, int max_x);
+
+
+void reset(Player &p, Bot &bot, Ball &ball)
+{
+    p.setup();
+    bot.setup();
+    ball.setup();
+}
 
 
 int main()
@@ -31,14 +36,13 @@ int main()
     InitAudioDevice();
 	SetTargetFPS(60);
 
-    auto [player_x, player_y] = random_pos(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND);
-    auto [bot_x, bot_y] = random_pos(RIGHT_BOUND - ((RIGHT_BOUND - LEFT_BOUND) / 2), RIGHT_BOUND);
-    Player p1(player_x, player_y);
+    Player p1;
     p1.kick_sound = LoadSound("media/sounds/ballsound.wav");
-    Bot bot(bot_x, bot_y);
+    Bot bot;
     Ball ball;
+    reset(p1, bot, ball);
 
-	while (!WindowShouldClose())
+    while (!WindowShouldClose())
 	{
         p1.update(ball);
         bot.update(ball, p1);
@@ -46,8 +50,11 @@ int main()
         ball.check_collision(p1, bot);
         ball.update();
 
+        if (ball.crossed_net)
+            reset(p1, bot, ball);
+
         draw(p1, bot, ball);
-	}
+    }
 
     UnloadSound(p1.kick_sound);
     CloseAudioDevice();
@@ -95,12 +102,4 @@ void draw(Player & p, Bot & bot, Ball & ball)
     DrawLineEx(Vector2{SCREENWIDTH - 20, GOALPOST_HEIGHT_END + GOALPOST_THICKNESS}, Vector2{SCREENWIDTH - 20, SCREENHEIGHT - 20}, 1, GRAY);  // bottom right vertical
 
     EndDrawing();
-}
-
-
-std::tuple<float, float> random_pos(int min_x, int max_x)
-{
-    int x = GetRandomValue(min_x, max_x / 2);
-    int y = GetRandomValue(UPPER_BOUND, LOWER_BOUND);
-    return std::make_tuple((float)x, (float)y);
 }

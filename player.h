@@ -18,11 +18,12 @@ protected:
     void set_velocity();
     void set_valid_velocity(float &value);
 public:
-    Player(float x, float y);
+    Player();
     Rectangle rec;
     Vector2 direction;
     Vector2 velocity;
     int power;
+    virtual void setup();
     Sound kick_sound;
     void update(Ball & ball);
 };

@@ -13,16 +13,26 @@ extern const int LEFT_BOUND;
 extern const int RIGHT_BOUND;
 
 
-Player::Player(float x, float y)
+Player::Player()
     :
     max_speed(2.f),
     acceleration_factor(0.1),
     deceleration_factor(0.2),
     velocity({0, 0}),
-    rec({x, y, 20.f, 20.f}),
+    rec({0, 0, 20.f, 20.f}),
     direction({0, 0}),
     power(0)
 {
+}
+
+
+void Player::setup()
+{
+    auto [pos_x, pos_y] = random_pos(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND, LOWER_BOUND, UPPER_BOUND);
+    rec.x = pos_x;
+    rec.y = pos_y;
+    velocity.x = 0;
+    velocity.y = 0;
 }
 
 

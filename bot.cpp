@@ -1,16 +1,29 @@
 #include <iostream>
+
 #include "bot.h"
 #include "ball.h"
+#include "utils.h"
 
 extern const int LEFT_BOUND;
 extern const int RIGHT_BOUND;
+extern const int UPPER_BOUND;
+extern const int LOWER_BOUND;
 
 
-
-Bot::Bot(float in_x, float in_y) : Player(in_x, in_y)
+Bot::Bot() : Player()
 {
     max_speed = 3.f;
 };
+
+
+void Bot::setup()
+{
+    auto [pos_x, pos_y] = random_pos(RIGHT_BOUND - ((RIGHT_BOUND - LEFT_BOUND) / 2), RIGHT_BOUND, UPPER_BOUND, LOWER_BOUND);
+    rec.x = pos_x;
+    rec.y = pos_y;
+    velocity.x = 0;
+    velocity.y = 0;
+}
 
 
 void Bot::update(Ball &ball, Player &p)

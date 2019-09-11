@@ -14,16 +14,27 @@ extern const int GOALPOST_THICKNESS;
 extern const float GOALPOST_HEIGHT_START;
 extern const float GOALPOST_HEIGHT_END;
 
+
 Ball::Ball()
-    : deceleration_factor(0.97),
-      radius(5.f),
-      position({((RIGHT_BOUND - LEFT_BOUND) / 2.f) + LEFT_BOUND, ((LOWER_BOUND - UPPER_BOUND) / 2.f) + UPPER_BOUND}),
-      velocity({0, 0}),
-      controlled_by(nullptr),
-      crossed_net(false),
-      left_score(0),
-      right_score(0)
+    :
+    deceleration_factor(0.97),
+    radius(5.f),
+    velocity({0, 0}),
+    controlled_by(nullptr),
+    crossed_net(false),
+    left_score(0),
+    right_score(0)
 {
+}
+
+
+void Ball::setup()
+{
+    position.x = ((RIGHT_BOUND - LEFT_BOUND) / 2.f) + LEFT_BOUND;
+    position.y = ((LOWER_BOUND - UPPER_BOUND) / 2.f) + UPPER_BOUND;
+    velocity.x = 0;
+    velocity.y = 0;
+    crossed_net = false;
 }
 
 

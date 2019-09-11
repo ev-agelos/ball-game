@@ -21,6 +21,7 @@ public:
     bool crossed_net;
     int left_score;
     int right_score;
+    void setup();
     void roll(const Player &p, float power);
     void update();
     void check_collision(Player & p, Bot & bot);
