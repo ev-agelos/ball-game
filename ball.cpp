@@ -14,8 +14,7 @@ extern const int GOALPOST_THICKNESS;
 extern const float GOALPOST_HEIGHT_START;
 extern const float GOALPOST_HEIGHT_END;
 
-
-Ball::Ball()
+Ball::Ball(Sound sound)
     :
     deceleration_factor(0.97),
     radius(5.f),
@@ -23,7 +22,8 @@ Ball::Ball()
     controlled_by(nullptr),
     crossed_net(false),
     left_score(0),
-    right_score(0)
+    right_score(0),
+    kick_sound(sound)
 {
 }
 
@@ -132,6 +132,13 @@ void Ball::roll(const Player & p, float power)
 
     velocity.x = kick_direction.x*power;
     velocity.y = kick_direction.y*power;
+}
+
+
+void Ball::kick(const Player &p, float power)
+{
+    roll(p, power);
+    PlaySound(kick_sound);
 }
 
 

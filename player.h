@@ -24,6 +24,5 @@ public:
     Vector2 velocity;
     int power;
     virtual void setup();
-    Sound kick_sound;
     void update(Ball & ball);
 };

@@ -37,9 +37,8 @@ int main()
 	SetTargetFPS(60);
 
     Player p1;
-    p1.kick_sound = LoadSound("media/sounds/ballsound.wav");
     Bot bot;
-    Ball ball;
+    Ball ball(LoadSound("media/sounds/ballsound.wav"));
     reset(p1, bot, ball);
 
     while (!WindowShouldClose())
@@ -56,7 +55,7 @@ int main()
         draw(p1, bot, ball);
     }
 
-    UnloadSound(p1.kick_sound);
+    UnloadSound(ball.kick_sound);
     CloseAudioDevice();
 	CloseWindow();
 	return 0;

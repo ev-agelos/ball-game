@@ -9,7 +9,7 @@ class Ball {
 private:
     const float deceleration_factor;
 public:
-    Ball();
+    Ball(Sound sound);
     float speed;
     float radius;
     Vector2 starting_position;
@@ -21,8 +21,10 @@ public:
     bool crossed_net;
     int left_score;
     int right_score;
+    Sound kick_sound;
     void setup();
     void roll(const Player &p, float power);
+    void kick(const Player &p, float power);
     void update();
     void check_collision(Player & p, Bot & bot);
 };
