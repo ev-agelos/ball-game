@@ -35,6 +35,8 @@ int main()
 	InitWindow(SCREENWIDTH, SCREENHEIGHT, "Ball Game");
     InitAudioDevice();
 	SetTargetFPS(60);
+    Sound crowd_sound = LoadSound("media/sounds/crowd01.wav");
+    Sound crowd_goal_sound = LoadSound("media/sounds/crowd02.wav");
 
     Player p1;
     Bot bot;
@@ -43,6 +45,8 @@ int main()
 
     while (!WindowShouldClose())
 	{
+        if (!IsSoundPlaying(crowd_sound))
+            PlaySound(crowd_sound);
         p1.update(ball);
         bot.update(ball, p1);
 
@@ -50,11 +54,16 @@ int main()
         ball.update();
 
         if (ball.crossed_net)
+        {
+            PlaySound(crowd_goal_sound);
             reset(p1, bot, ball);
+        }
 
         draw(p1, bot, ball);
     }
 
+    UnloadSound(crowd_sound);
+    UnloadSound(crowd_goal_sound);
     UnloadSound(ball.kick_sound);
     CloseAudioDevice();
 	CloseWindow();
