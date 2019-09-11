@@ -36,7 +36,9 @@ int main()
     InitAudioDevice();
 	SetTargetFPS(60);
     Sound crowd_sound = LoadSound("media/sounds/crowd01.wav");
+    SetSoundVolume(crowd_sound, 0.05);
     Sound crowd_goal_sound = LoadSound("media/sounds/crowd02.wav");
+    SetSoundVolume(crowd_goal_sound, 0.05);
 
     Player p1;
     Bot bot;
