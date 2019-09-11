@@ -32,7 +32,7 @@ void reset(Player &p, Bot &bot, Ball &ball)
 
 int main()
 {
-	InitWindow(SCREENWIDTH, SCREENHEIGHT, "Passing Game");
+	InitWindow(SCREENWIDTH, SCREENHEIGHT, "Ball Game");
     InitAudioDevice();
 	SetTargetFPS(60);
 
