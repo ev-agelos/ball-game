@@ -144,8 +144,22 @@ void Ball::kick(const Player &p, float power)
 
 void Ball::check_collision(Player & p, Bot & bot)
 {
-    if (CheckCollisionCircleRec(position, radius, {p.rec.x, p.rec.y, p.rec.width, p.rec.height}))
-        controlled_by = &p;
-    else if (controlled_by != &bot && CheckCollisionCircleRec(position, radius, {bot.rec.x, bot.rec.y, bot.rec.width, bot.rec.height}))
+    if (controlled_by != nullptr)
+        return;
+
+    if (CheckCollisionCircleRec(position, radius, p.rec))
+    {
+        if (velocity.x > p.max_speed)
+            velocity.x *= -1;
+        else if (velocity.y > p.max_speed)
+            velocity.y *= -1;
+        else
+        {
+            controlled_by = &p;
+            velocity.x = 0;
+            velocity.y = 0;
+        }
+    }
+    else if (controlled_by != &bot && CheckCollisionCircleRec(position, radius, bot.rec))
        controlled_by = &bot;
 }

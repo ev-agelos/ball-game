@@ -9,7 +9,6 @@ class Player
 private:
     void handle_movement_control(Ball & ball);
 protected:
-    float max_speed;
     const float acceleration_factor;
     const float deceleration_factor;
     Color color;
@@ -18,6 +17,7 @@ protected:
     void set_velocity();
     void set_valid_velocity(float &value);
 public:
+    float max_speed;
     Player();
     Rectangle rec;
     Vector2 direction;
