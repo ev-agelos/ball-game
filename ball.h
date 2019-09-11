@@ -18,7 +18,10 @@ public:
     void set_y(float val);
     Vector2 velocity;
     Player* controlled_by;
-    void roll(const Player & p, float power);
+    bool crossed_net;
+    int left_score;
+    int right_score;
+    void roll(const Player &p, float power);
     void update();
     void check_collision(Player & p, Bot & bot);
 };

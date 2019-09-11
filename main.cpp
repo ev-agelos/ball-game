@@ -61,6 +61,9 @@ void draw(Player & p, Bot & bot, Ball & ball)
     BeginDrawing();
     ClearBackground(BLACK);
 
+    // Score
+    DrawText(FormatText("Score: %01i - %01i", ball.left_score, ball.right_score), SCREENWIDTH/2 - 60, SCREENHEIGHT - 18, 19, RED);
+
     // players and ball
     DrawRectangleRec(p.rec, GREEN);
     DrawRectangleRec(bot.rec, BLUE);
