@@ -119,14 +119,11 @@ void Player::handle_movement_control(Ball & ball)
         update_pos(velocity);
     }
     else if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
-    {
         ball.roll(*this, 3);
-        // Avoid the slow down when changing to opposite direction
-        if (dot_product(velocity, ball.velocity) == -1)
-        {
-            velocity.x *= -1;
-            velocity.y *= -1;
-        }
+    else if (dot_product(normalize_vector(velocity), normalize_vector(ball.velocity)) == -1)
+    {
+        set_velocity();
+        update_pos(velocity);
     }
     else
     {
