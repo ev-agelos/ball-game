@@ -7,8 +7,8 @@
 
 const int SCREENWIDTH = 800;
 const int SCREENHEIGHT = 450;
-extern const int UPPER_BOUND = 20;
-extern const int LOWER_BOUND = SCREENHEIGHT - UPPER_BOUND;
+extern const int TOP_BOUND = 20;
+extern const int BOTTOM_BOUND = SCREENHEIGHT - TOP_BOUND;
 extern const int LEFT_BOUND = 20;
 extern const int RIGHT_BOUND = SCREENWIDTH - LEFT_BOUND;
 const int POWERBAR_WIDTH = 100;

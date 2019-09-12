@@ -6,8 +6,8 @@
 #include "bot.h"
 #include "utils.h"
 
-extern const int UPPER_BOUND;
-extern const int LOWER_BOUND;
+extern const int TOP_BOUND;
+extern const int BOTTOM_BOUND;
 extern const int LEFT_BOUND;
 extern const int RIGHT_BOUND;
 extern const int GOALPOST_THICKNESS;
@@ -31,7 +31,7 @@ Ball::Ball(Sound sound)
 void Ball::setup()
 {
     position.x = ((RIGHT_BOUND - LEFT_BOUND) / 2.f) + LEFT_BOUND;
-    position.y = ((LOWER_BOUND - UPPER_BOUND) / 2.f) + UPPER_BOUND;
+    position.y = ((BOTTOM_BOUND - TOP_BOUND) / 2.f) + TOP_BOUND;
     velocity.x = 0;
     velocity.y = 0;
     crossed_net = false;
@@ -76,7 +76,7 @@ void Ball::set_x(float val)
 void Ball::set_y(float val)
 {
     // ball is in limits
-    if (((val - radius) > UPPER_BOUND) && ((val + radius) < LOWER_BOUND))
+    if (((val - radius) > TOP_BOUND) && ((val + radius) < BOTTOM_BOUND))
     {
         position.y = val;
         return;

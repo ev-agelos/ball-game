@@ -7,8 +7,8 @@
 #include "ball.h"
 #include "utils.h"
 
-extern const int UPPER_BOUND;
-extern const int LOWER_BOUND;
+extern const int TOP_BOUND;
+extern const int BOTTOM_BOUND;
 extern const int LEFT_BOUND;
 extern const int RIGHT_BOUND;
 
@@ -28,9 +28,8 @@ Player::Player()
 
 void Player::setup()
 {
-    auto [pos_x, pos_y] = random_pos(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND, LOWER_BOUND, UPPER_BOUND);
-    rec.x = pos_x;
-    rec.y = pos_y;
+    rec.x = GetRandomValue(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND);
+    rec.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND);
     velocity.x = 0;
     velocity.y = 0;
 }
@@ -43,7 +42,7 @@ void Player::update_pos(const Vector2 &v)
         rec.x = new_x;
 
     float new_y = rec.y + v.y;
-    if (new_y >= UPPER_BOUND && (new_y + rec.height) <= LOWER_BOUND)
+    if (new_y >= TOP_BOUND && (new_y + rec.height) <= BOTTOM_BOUND)
         rec.y = new_y;
 }
 

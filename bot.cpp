@@ -2,12 +2,11 @@
 
 #include "bot.h"
 #include "ball.h"
-#include "utils.h"
 
 extern const int LEFT_BOUND;
 extern const int RIGHT_BOUND;
-extern const int UPPER_BOUND;
-extern const int LOWER_BOUND;
+extern const int TOP_BOUND;
+extern const int BOTTOM_BOUND;
 
 
 Bot::Bot() : Player()
@@ -18,9 +17,8 @@ Bot::Bot() : Player()
 
 void Bot::setup()
 {
-    auto [pos_x, pos_y] = random_pos(RIGHT_BOUND - ((RIGHT_BOUND - LEFT_BOUND) / 2), RIGHT_BOUND, UPPER_BOUND, LOWER_BOUND);
-    rec.x = pos_x;
-    rec.y = pos_y;
+    rec.x = GetRandomValue(((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND, RIGHT_BOUND);
+    rec.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND);
     velocity.x = 0;
     velocity.y = 0;
 }
