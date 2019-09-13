@@ -28,8 +28,8 @@ Player::Player()
 
 void Player::setup()
 {
-    rec.x = GetRandomValue(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND);
-    rec.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND);
+    rec.x = GetRandomValue(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND - rec.width) / 2) + LEFT_BOUND);
+    rec.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND - rec.height);
     velocity.x = 0;
     velocity.y = 0;
 }
