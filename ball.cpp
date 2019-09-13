@@ -123,12 +123,6 @@ void Ball::roll(const Player & p, float power)
         float dy = position.y - player_center_y;
         kick_direction = normalize_vector({dx, dy});
     }
-    
-    // set the ball's position relative to player update and then "kick" it
-    float player_radius = std::sqrt(p.rec.width*p.rec.width + p.rec.height*p.rec.height) / 2;
-    velocity.x = (player_center_x - position.x) + kick_direction.x * (player_radius + radius);
-    velocity.y = (player_center_y - position.y) + kick_direction.y * (player_radius + radius);
-    update();
 
     velocity.x = kick_direction.x*power;
     velocity.y = kick_direction.y*power;
