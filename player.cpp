@@ -54,8 +54,6 @@ void Player::set_valid_velocity(float &value)
         value = max_speed;
     else if (value < -max_speed)
         value = -max_speed;
-    else if ((value > 0 && value < 0.1) || (value < 0 && value > -0.1))
-        value = 0;
 }
 
 
@@ -87,17 +85,23 @@ void Player::set_acceleration()
 
 void Player::set_velocity()
 {
-    if (not direction.x and velocity.x < 0)
-        velocity.x += deceleration_factor;
-    else if (not direction.x and velocity.x > 0)
-        velocity.x -= deceleration_factor;
+    if (not direction.x and velocity.x)
+    {
+        velocity.x += (-velocity.x / abs(velocity.x)) * deceleration_factor;
+        // zero out so player doesnt move on values close to zero
+        if ((velocity.x > 0 && velocity.x < 0.1) || (velocity.x < 0 && velocity.x > -0.1))
+            velocity.x = 0;
+    }
     else
         velocity.x += acceleration.x;
 
-    if (not direction.y and velocity.y < 0)
-        velocity.y += deceleration_factor;
-    else if (not direction.y and velocity.y > 0)
-        velocity.y -= deceleration_factor;
+    if (not direction.y and velocity.y)
+    {
+        velocity.y += (-velocity.y / abs(velocity.y)) * deceleration_factor;
+        // zero out so player doesnt move on values close to zero
+        if ((velocity.y > 0 && velocity.y < 0.1) || (velocity.y < 0 && velocity.y > -0.1))
+            velocity.y = 0;
+    }
     else
         velocity.y += acceleration.y;
 
