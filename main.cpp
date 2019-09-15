@@ -52,8 +52,8 @@ int main()
         p1.update(ball);
         bot.update(ball, p1);
 
-        ball.check_collision(p1, bot);
         ball.update();
+        ball.check_collision(p1, bot);
 
         if (ball.crossed_net)
         {
