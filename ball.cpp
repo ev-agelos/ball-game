@@ -118,6 +118,7 @@ void Ball::roll(const Vector2 & kick_direction, float power)
 void Ball::kick(const Vector2 &kick_direction, float power)
 {
     roll(kick_direction, power);
+    controlled_by = nullptr;
     PlaySound(kick_sound);
 }
 

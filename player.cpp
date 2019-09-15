@@ -131,7 +131,6 @@ void Player::handle_movement_control(Ball & ball)
         if (power && IsKeyUp(KEY_S))
         {
             ball.kick(get_kick_direction(ball.position), power);
-            ball.controlled_by = nullptr;
             power = 0;
         }
         else
