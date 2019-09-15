@@ -16,8 +16,9 @@ extern const int RIGHT_BOUND;
 Player::Player()
     :
     max_speed(2.f),
+    acceleration({0, 0}),
     acceleration_factor(0.1),
-    deceleration_factor(0.2),
+    deceleration_factor(0.05),
     rec({0, 0, 20.f, 20.f}),
     direction({0, 0}),
     velocity({0, 0}),
@@ -58,7 +59,7 @@ void Player::set_valid_velocity(float &value)
 }
 
 
-void Player::set_direction()
+void Player::set_acceleration()
 {
     if (IsKeyDown(KEY_RIGHT) and IsKeyDown(KEY_LEFT))
         direction.x = 0;
@@ -77,6 +78,10 @@ void Player::set_direction()
         direction.y = 1;
     else
         direction.y = 0;
+
+    Vector2 norm_dir = normalize_vector(direction);
+    acceleration.x = norm_dir.x * acceleration_factor;
+    acceleration.y = norm_dir.y * acceleration_factor;
 }
 
 
@@ -87,14 +92,14 @@ void Player::set_velocity()
     else if (not direction.x and velocity.x > 0)
         velocity.x -= deceleration_factor;
     else
-        velocity.x += direction.x * acceleration_factor;
+        velocity.x += acceleration.x;
 
     if (not direction.y and velocity.y < 0)
         velocity.y += deceleration_factor;
     else if (not direction.y and velocity.y > 0)
         velocity.y -= deceleration_factor;
     else
-        velocity.y += direction.y * acceleration_factor;
+        velocity.y += acceleration.y;
 
     set_valid_velocity(velocity.x);
     set_valid_velocity(velocity.y);
@@ -103,7 +108,7 @@ void Player::set_velocity()
 
 void Player::handle_movement_control(Ball & ball)
 {
-    set_direction();
+    set_acceleration();
     if (ball.controlled_by != this)
     {
         set_velocity();
@@ -131,14 +136,9 @@ void Player::handle_movement_control(Ball & ball)
         float player_center_y = rec.y + rec.height/2;
         float dx = ball.position.x - player_center_x;
         float dy = ball.position.y - player_center_y;
-        Vector2 player_ball_dir = normalize_vector({dx, dy});
-        direction.x = player_ball_dir.x ? player_ball_dir.x/abs(player_ball_dir.x) : 0;
-        direction.y = player_ball_dir.y ? player_ball_dir.y/abs(player_ball_dir.y) : 0;
-        set_velocity();
-
-        // use same speed to avoid the curve
-        float speed = std::max(abs(velocity.x), abs(velocity.y));
-        update_pos({player_ball_dir.x * speed, player_ball_dir.y * speed});
+        Vector2 desired_dir = normalize_vector({dx, dy});
+        velocity = {desired_dir.x * max_speed, desired_dir.y * max_speed};
+        update_pos(velocity);
     }
 }
 
