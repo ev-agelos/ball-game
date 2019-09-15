@@ -23,8 +23,8 @@ public:
     int right_score;
     Sound kick_sound;
     void setup();
-    void roll(const Player &p, float power);
-    void kick(const Player &p, float power);
+    void roll(const Vector2 &kick_direction, float power);
+    void kick(const Vector2 &kick_direction, float power);
     void update();
     void check_collision(Player & p, Bot & bot);
 };

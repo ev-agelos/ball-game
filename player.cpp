@@ -127,7 +127,7 @@ void Player::handle_movement_control(Ball & ball)
         update_pos(velocity);
     }
     else if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
-        ball.roll(*this, 3);
+        ball.roll(get_kick_direction(ball.position), 3);
     else if (dot_product(normalize_vector(velocity), normalize_vector(ball.velocity)) == -1)
     {
         set_velocity();
@@ -158,10 +158,25 @@ void Player::update(Ball & ball)
     {
         if (ball.controlled_by == this)
         {
-            ball.kick(*this, power);
+            ball.kick(get_kick_direction(ball.position), power);
             ball.controlled_by = nullptr;
         }
         power = 0;
     }
 
+}
+
+
+const Vector2 Player::get_kick_direction(const Vector2 &ball_pos) const
+{
+    if (direction.x || direction.y)
+        return normalize_vector(direction);
+    else
+    {
+        float center_x = rec.x + rec.width/2;
+        float center_y = rec.y + rec.height/2;
+        float dx = ball_pos.x - center_x;
+        float dy = ball_pos.y - center_y;
+        return normalize_vector({dx, dy});
+    }
 }

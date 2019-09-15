@@ -108,30 +108,16 @@ void Ball::update()
 }
 
 
-void Ball::roll(const Player & p, float power)
+void Ball::roll(const Vector2 & kick_direction, float power)
 {
-    Vector2 kick_direction;
-    float player_center_x = p.rec.x + p.rec.width/2;
-    float player_center_y = p.rec.y + p.rec.height/2;
-
-    // set ball's direction the one that player points to
-    if (p.direction.x || p.direction.y)
-        kick_direction = normalize_vector(p.direction);
-    else
-    {
-        float dx = position.x - player_center_x;
-        float dy = position.y - player_center_y;
-        kick_direction = normalize_vector({dx, dy});
-    }
-
     velocity.x = kick_direction.x*power;
     velocity.y = kick_direction.y*power;
 }
 
 
-void Ball::kick(const Player &p, float power)
+void Ball::kick(const Vector2 &kick_direction, float power)
 {
-    roll(p, power);
+    roll(kick_direction, power);
     PlaySound(kick_sound);
 }
 
