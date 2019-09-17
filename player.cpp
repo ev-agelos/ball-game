@@ -16,10 +16,10 @@ extern const int RIGHT_BOUND;
 Player::Player()
     :
     ball_collision(false),
-    max_speed(2.f),
     acceleration({0, 0}),
     acceleration_factor(0.1),
     deceleration_factor(0.05),
+    max_speed(2.f),
     rec({0, 0, 20.f, 20.f}),
     direction({0, 0}),
     velocity({0, 0}),
