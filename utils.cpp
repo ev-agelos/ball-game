@@ -3,9 +3,15 @@
 #include <raylib.h>
 
 
-Vector2 normalize_vector(const Vector2 v)
+float get_magnitude(const Vector2 v)
 {
-    float magnitude = sqrt(v.x * v.x + v.y * v.y);
+    return sqrt(v.x * v.x + v.y * v.y);
+}
+
+
+const Vector2 normalize_vector(const Vector2 v)
+{
+    float magnitude = get_magnitude(v);
     if (magnitude)
         return {v.x/magnitude, v.y/magnitude};
 

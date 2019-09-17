@@ -8,6 +8,8 @@ class Player
 {
 private:
     void handle_movement_control(Ball & ball);
+    bool ball_collision;
+
 protected:
     Vector2 acceleration;
     const float acceleration_factor;

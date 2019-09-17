@@ -15,6 +15,7 @@ extern const int RIGHT_BOUND;
 
 Player::Player()
     :
+    ball_collision(false),
     max_speed(2.f),
     acceleration({0, 0}),
     acceleration_factor(0.1),
@@ -77,9 +78,8 @@ void Player::set_acceleration()
     else
         direction.y = 0;
 
-    Vector2 norm_dir = normalize_vector(direction);
-    acceleration.x = norm_dir.x * acceleration_factor;
-    acceleration.y = norm_dir.y * acceleration_factor;
+    acceleration.x = direction.x ? direction.x * acceleration_factor : 0;
+    acceleration.y = direction.y ? direction.y * acceleration_factor : 0;
 }
 
 
@@ -113,6 +113,10 @@ void Player::set_velocity()
 void Player::handle_movement_control(Ball & ball)
 {
     set_acceleration();
+    // Reset flag when ball comes outside rectangle's body
+    if (!CheckCollisionCircleRec(ball.position, ball.radius, rec))
+        ball_collision = false;
+
     if (ball.controlled_by != this)
     {
         set_velocity();
@@ -121,20 +125,30 @@ void Player::handle_movement_control(Ball & ball)
     }
 
     // User controls the ball
-    if (direction.x == 0 and direction.y == 0)  // no input so keep ball's direction
+    if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
+    {
+        if (!ball_collision) // avoid calling roll() while ball is inside rectangle's body
+        {
+            if (power && IsKeyUp(KEY_S))
+            {
+                ball.kick(get_kick_direction(ball.position), power);
+                power = 0;
+            }
+            else
+                ball.roll(get_kick_direction(ball.position), 3);
+            ball_collision = true;
+        }
+        else
+        {
+            set_velocity();
+            update_pos(velocity);
+        }
+        
+    }
+    else if (direction.x == 0 and direction.y == 0)  // no input so keep ball's direction
     {
         set_velocity();
         update_pos(velocity);
-    }
-    else if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
-    {
-        if (power && IsKeyUp(KEY_S))
-        {
-            ball.kick(get_kick_direction(ball.position), power);
-            power = 0;
-        }
-        else
-            ball.roll(get_kick_direction(ball.position), 3);
     }
     else if (dot_product(normalize_vector(velocity), normalize_vector(ball.velocity)) == -1)
     {
@@ -143,13 +157,23 @@ void Player::handle_movement_control(Ball & ball)
     }
     else
     {
-        // keep player following ball cause he controls it
+        // seek ball
         float player_center_x = rec.x + rec.width/2;
         float player_center_y = rec.y + rec.height/2;
         float dx = ball.position.x - player_center_x;
         float dy = ball.position.y - player_center_y;
         Vector2 desired_dir = normalize_vector({dx, dy});
-        velocity = {desired_dir.x * max_speed, desired_dir.y * max_speed};
+        Vector2 desired_velocity = {desired_dir.x * max_speed, desired_dir.y * max_speed};
+        acceleration = {desired_velocity.x - velocity.x, desired_velocity.y - velocity.y};
+
+        if (abs(acceleration.x) > acceleration_factor)
+            acceleration.x = (acceleration.x / abs(acceleration.x)) * acceleration_factor;
+        if (abs(acceleration.y) > acceleration_factor)
+            acceleration.y = (acceleration.y / abs(acceleration.y)) * acceleration_factor;
+
+        // Bypass calling set_velocity as it will slow down cause depends on user input
+        velocity.x += acceleration.x;
+        velocity.y += acceleration.y;
         update_pos(velocity);
     }
 }
