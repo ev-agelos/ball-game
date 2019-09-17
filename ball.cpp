@@ -128,7 +128,7 @@ void Ball::check_collision(Player & p, Bot & bot)
     if (controlled_by != nullptr)
         return;
 
-    if (CheckCollisionCircleRec(position, radius, p.rec))
+    if (CheckCollisionCircleRec(position, radius, {p.position.x - p.size.x/2, p.position.y - p.size.y/2, p.size.x, p.size.y}))
     {
         if (velocity.x > p.max_speed)
             velocity.x *= -1;
@@ -141,6 +141,6 @@ void Ball::check_collision(Player & p, Bot & bot)
             velocity.y = 0;
         }
     }
-    else if (controlled_by != &bot && CheckCollisionCircleRec(position, radius, bot.rec))
+    else if (controlled_by != &bot && CheckCollisionCircleRec(position, radius, {bot.position.x - bot.size.x/2, bot.position.y - bot.size.y/2, bot.size.x, bot.size.y}))
        controlled_by = &bot;
 }

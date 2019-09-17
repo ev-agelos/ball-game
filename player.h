@@ -23,7 +23,8 @@ protected:
 public:
     float max_speed;
     Player();
-    Rectangle rec;
+    Vector2 position;
+    Vector2 size;
     Vector2 direction;
     Vector2 velocity;
     int power;

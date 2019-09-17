@@ -82,8 +82,8 @@ void draw(Player & p, Bot & bot, Ball & ball)
     DrawText(FormatText("Score: %01i - %01i", ball.left_score, ball.right_score), SCREENWIDTH/2 - 60, SCREENHEIGHT - 18, 19, RED);
 
     // players and ball
-    DrawRectangleRec(p.rec, GREEN);
-    DrawRectangleRec(bot.rec, BLUE);
+    DrawRectangleV({p.position.x - p.size.x/2, p.position.y - p.size.y/2}, p.size, GREEN);
+    DrawRectangleV({bot.position.x - bot.size.x/2, bot.position.y - bot.size.y/2}, bot.size, BLUE);
     DrawCircleV(ball.position, ball.radius, RAYWHITE);
 
     // power bars

@@ -20,7 +20,8 @@ Player::Player()
     acceleration_factor(0.1),
     deceleration_factor(0.05),
     max_speed(2.f),
-    rec({0, 0, 20.f, 20.f}),
+    position({0, 0}),
+    size({20, 20}),
     direction({0, 0}),
     velocity({0, 0}),
     power(0)
@@ -30,8 +31,8 @@ Player::Player()
 
 void Player::setup()
 {
-    rec.x = GetRandomValue(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND - rec.width) / 2) + LEFT_BOUND);
-    rec.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND - rec.height);
+    position.x = GetRandomValue(LEFT_BOUND + size.x/2, ((RIGHT_BOUND - LEFT_BOUND - size.x/2) / 2) + LEFT_BOUND);
+    position.y = GetRandomValue(TOP_BOUND + size.y/2, BOTTOM_BOUND - size.y/2);
     velocity.x = 0;
     velocity.y = 0;
 }
@@ -39,13 +40,13 @@ void Player::setup()
 
 void Player::update_pos(const Vector2 &v)
 {
-    float new_x = rec.x + v.x;
-    if (new_x >= LEFT_BOUND && (new_x + rec.width) <= RIGHT_BOUND)
-        rec.x = new_x;
+    float new_x = position.x + v.x;
+    if ((new_x - size.x/2) >= LEFT_BOUND && (new_x + size.x/2) <= RIGHT_BOUND)
+        position.x = new_x;
 
-    float new_y = rec.y + v.y;
-    if (new_y >= TOP_BOUND && (new_y + rec.height) <= BOTTOM_BOUND)
-        rec.y = new_y;
+    float new_y = position.y + v.y;
+    if ((new_y - size.y/2) >= TOP_BOUND && (new_y + size.y/2) <= BOTTOM_BOUND)
+        position.y = new_y;
 }
 
 
@@ -114,7 +115,7 @@ void Player::handle_movement_control(Ball & ball)
 {
     set_acceleration();
     // Reset flag when ball comes outside rectangle's body
-    if (!CheckCollisionCircleRec(ball.position, ball.radius, rec))
+    if (!CheckCollisionCircleRec(ball.position, ball.radius, {position.x - size.x/2, position.y - size.y/2, size.x, size.y}))
         ball_collision = false;
 
     if (ball.controlled_by != this)
@@ -125,7 +126,7 @@ void Player::handle_movement_control(Ball & ball)
     }
 
     // User controls the ball
-    if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
+    if (CheckCollisionCircleRec(ball.position, ball.radius, {position.x - size.x/2, position.y - size.y/2, size.x, size.y}))
     {
         if (!ball_collision) // avoid calling roll() while ball is inside rectangle's body
         {
@@ -158,10 +159,8 @@ void Player::handle_movement_control(Ball & ball)
     else
     {
         // seek ball
-        float player_center_x = rec.x + rec.width/2;
-        float player_center_y = rec.y + rec.height/2;
-        float dx = ball.position.x - player_center_x;
-        float dy = ball.position.y - player_center_y;
+        float dx = ball.position.x - position.x;
+        float dy = ball.position.y - position.y;
         Vector2 desired_dir = normalize_vector({dx, dy});
         Vector2 desired_velocity = {desired_dir.x * max_speed, desired_dir.y * max_speed};
         acceleration = {desired_velocity.x - velocity.x, desired_velocity.y - velocity.y};
@@ -194,10 +193,8 @@ const Vector2 Player::get_kick_direction(const Vector2 &ball_pos) const
         return normalize_vector(direction);
     else
     {
-        float center_x = rec.x + rec.width / 2;
-        float center_y = rec.y + rec.height/2;
-        float dx = ball_pos.x - center_x;
-        float dy = ball_pos.y - center_y;
+        float dx = ball_pos.x - position.x;
+        float dy = ball_pos.y - position.y;
         return normalize_vector({dx, dy});
     }
 }
