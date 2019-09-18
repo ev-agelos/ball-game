@@ -56,7 +56,8 @@
                 "args": [
                     "clean"
                 ]
-            }
+            },
+            "problemMatcher": []
         }
     ]
 }
