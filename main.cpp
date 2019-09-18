@@ -60,6 +60,8 @@ int main()
             PlaySound(crowd_goal_sound);
             reset(p1, bot, ball);
         }
+        if (IsKeyPressed(KEY_R))
+            reset(p1, bot, ball);
 
         draw(p1, bot, ball);
     }
