@@ -16,8 +16,11 @@ extern const float GOALPOST_HEIGHT_END;
 
 Ball::Ball(Sound sound)
     :
-    deceleration_factor(0.97),
+    acceleration_factor(1),
+    friction_c(0.04),
     radius(5.f),
+    acceleration({0, 0}),
+    friction({0, 0}),
     velocity({0, 0}),
     controlled_by(nullptr),
     crossed_net(false),
@@ -87,31 +90,63 @@ void Ball::set_y(float val)
 }
 
 
+void Ball::apply_acceleration()
+{
+    if (acceleration.x > acceleration_factor)
+        velocity.x += acceleration_factor;
+    else
+        velocity.x += acceleration.x;
+
+    if (acceleration.y > acceleration_factor)
+        velocity.y += acceleration_factor;
+    else
+        velocity.y += acceleration.y;
+
+    if (acceleration.x)
+    {
+        acceleration.x -= acceleration_factor;
+        if (acceleration.x < 0)
+            acceleration.x = 0;
+    }
+        
+    if (acceleration.y)
+    {
+        acceleration.y -= acceleration_factor;
+        if (acceleration.y < 0)
+            acceleration.y = 0;
+    }
+}
+
+
+void Ball::apply_friction()
+{
+    Vector2 norm_velocity = normalize_vector(velocity);
+    friction.x = norm_velocity.x * friction_c * -1;
+    friction.y = norm_velocity.y * friction_c * -1;
+    
+    if (abs(friction.x) >= abs(velocity.x))
+        friction.x = -velocity.x;
+    if (abs(friction.y) >= abs(velocity.y))
+        friction.x = -velocity.y;
+
+    velocity.x += friction.x;
+    velocity.y += friction.y;
+}
+
+
 void Ball::update()
 {
-    if (velocity.x == 0 && velocity.y == 0)
-        return;
-
+    apply_acceleration();
+    apply_friction();
     set_x(position.x + velocity.x);
-    velocity.x *= deceleration_factor;
-
-    if (abs(velocity.x) < 0.1)
-        velocity.x = 0;
-
-    if (velocity.y)
-    {
-        set_y(position.y + velocity.y);
-        velocity.y *= deceleration_factor;
-        if (abs(velocity.y) < 0.1)
-            velocity.y = 0;
-    }
+    set_y(position.y + velocity.y);
 }
 
 
 void Ball::roll(const Vector2 & kick_direction, float power)
 {
-    velocity.x = kick_direction.x*power;
-    velocity.y = kick_direction.y*power;
+    acceleration.x = kick_direction.x * power;
+    acceleration.y = kick_direction.y * power;
 }
 
 

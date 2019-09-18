@@ -7,17 +7,19 @@ class Bot;
 
 class Ball {
 private:
-    const float deceleration_factor;
+    const float acceleration_factor;
+    const float friction_c;
+
 public:
     Ball(Sound sound);
-    float speed;
     float radius;
-    Vector2 starting_position;
     Vector2 position;
+    Vector2 acceleration;
+    Vector2 friction;
     void set_x(float val);
     void set_y(float val);
     Vector2 velocity;
-    Player* controlled_by;
+    Player *controlled_by;
     bool crossed_net;
     int left_score;
     int right_score;
@@ -27,4 +29,6 @@ public:
     void kick(const Vector2 &kick_direction, float power);
     void update();
     void check_collision(Player & p, Bot & bot);
+    void apply_acceleration();
+    void apply_friction();
 };
