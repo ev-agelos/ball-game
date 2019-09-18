@@ -50,20 +50,6 @@ void Player::update_pos(const Vector2 &v)
 }
 
 
-void Player::limit_velocity()
-{
-    if (velocity.x > max_speed)
-        velocity.x = max_speed;
-    else if (velocity.x < -max_speed)
-        velocity.x = -max_speed;
-        
-    if (velocity.y > max_speed)
-        velocity.y = max_speed;
-    else if (velocity.y < -max_speed)
-        velocity.y = -max_speed;
-}
-
-
 void Player::set_acceleration()
 {
     if (IsKeyDown(KEY_RIGHT) and IsKeyDown(KEY_LEFT))
@@ -111,7 +97,7 @@ void Player::set_velocity()
     else
         velocity.y += acceleration.y;
 
-    limit_velocity();
+    limit_vector(velocity, max_speed);
 }
 
 
@@ -169,10 +155,8 @@ void Player::handle_movement_control(Ball & ball)
         Vector2 desired_velocity = {desired_dir.x * max_speed, desired_dir.y * max_speed};
         acceleration = {desired_velocity.x - velocity.x, desired_velocity.y - velocity.y};
 
-        if (abs(acceleration.x) > acceleration_factor)
-            acceleration.x = (acceleration.x / abs(acceleration.x)) * acceleration_factor;
-        if (abs(acceleration.y) > acceleration_factor)
-            acceleration.y = (acceleration.y / abs(acceleration.y)) * acceleration_factor;
+
+        limit_vector(acceleration, acceleration_factor);
 
         // Bypass calling set_velocity as it will slow down cause depends on user input
         velocity.x += acceleration.x;

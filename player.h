@@ -18,7 +18,6 @@ protected:
     void update_pos(const Vector2 &v);
     void set_acceleration();
     void set_velocity();
-    void limit_velocity();
     const Vector2 get_kick_direction(const Vector2 &ball_pos) const;
 public:
     float max_speed;
