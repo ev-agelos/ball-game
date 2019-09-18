@@ -50,12 +50,17 @@ void Player::update_pos(const Vector2 &v)
 }
 
 
-void Player::set_valid_velocity(float &value)
+void Player::limit_velocity()
 {
-    if (value > max_speed)
-        value = max_speed;
-    else if (value < -max_speed)
-        value = -max_speed;
+    if (velocity.x > max_speed)
+        velocity.x = max_speed;
+    else if (velocity.x < -max_speed)
+        velocity.x = -max_speed;
+        
+    if (velocity.y > max_speed)
+        velocity.y = max_speed;
+    else if (velocity.y < -max_speed)
+        velocity.y = -max_speed;
 }
 
 
@@ -106,8 +111,7 @@ void Player::set_velocity()
     else
         velocity.y += acceleration.y;
 
-    set_valid_velocity(velocity.x);
-    set_valid_velocity(velocity.y);
+    limit_velocity();
 }
 
 
