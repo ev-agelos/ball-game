@@ -11,6 +11,7 @@ extern const int TOP_BOUND;
 extern const int BOTTOM_BOUND;
 extern const int LEFT_BOUND;
 extern const int RIGHT_BOUND;
+const int APPROACH_RADIUS = 30;
 
 
 Player::Player()
@@ -136,9 +137,23 @@ void Player::handle_movement_control(Ball & ball)
         }
         
     }
-    else if (direction.x == 0 and direction.y == 0)  // no input so keep ball's direction
+    else if (!direction.x and !direction.y)  // no input so slow down
     {
-        set_velocity();
+        float nearest_x = std::max(position.x - size.x / 2, std::min(ball.position.x, position.x + size.x / 2));
+        float nearest_y = std::max(position.y - size.y/2, std::min(ball.position.y, position.y + size.y/2));
+        float distance = get_magnitude({ball.position.x - nearest_x, ball.position.y - nearest_y}) - ball.radius - 1; // -1 so they don't collide
+        if (distance < APPROACH_RADIUS)
+        {
+            float speed = distance / APPROACH_RADIUS * max_speed;
+            Vector2 desired_dir = normalize_vector({ball.position.x - position.x, ball.position.y - position.y});
+            Vector2 desired_velocity = {desired_dir.x * speed, desired_dir.y * speed};
+            acceleration = {desired_velocity.x - velocity.x, desired_velocity.y - velocity.y};
+            limit_vector(acceleration, acceleration_factor);
+            velocity.x += acceleration.x;
+            velocity.y += acceleration.y;
+        }
+        else
+            set_velocity();
         update_pos(velocity);
     }
     else if (dot_product(normalize_vector(velocity), normalize_vector(ball.velocity)) == -1)
@@ -154,8 +169,6 @@ void Player::handle_movement_control(Ball & ball)
         Vector2 desired_dir = normalize_vector({dx, dy});
         Vector2 desired_velocity = {desired_dir.x * max_speed, desired_dir.y * max_speed};
         acceleration = {desired_velocity.x - velocity.x, desired_velocity.y - velocity.y};
-
-
         limit_vector(acceleration, acceleration_factor);
 
         // Bypass calling set_velocity as it will slow down cause depends on user input
