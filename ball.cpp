@@ -125,9 +125,9 @@ void Ball::apply_friction()
     friction.y = norm_velocity.y * friction_c * -1;
     
     if (abs(friction.x) >= abs(velocity.x))
-        friction.x = -velocity.x;
+        velocity.x = friction.x = 0;
     if (abs(friction.y) >= abs(velocity.y))
-        friction.x = -velocity.y;
+        velocity.y = friction.y = 0;
 
     velocity.x += friction.x;
     velocity.y += friction.y;
@@ -165,6 +165,7 @@ void Ball::check_collision(Player & p, Bot & bot)
 
     if (CheckCollisionCircleRec(position, radius, {p.position.x - p.size.x/2, p.position.y - p.size.y/2, p.size.x, p.size.y}))
     {
+        
         if (velocity.x > p.max_speed)
             velocity.x *= -1;
         else if (velocity.y > p.max_speed)
