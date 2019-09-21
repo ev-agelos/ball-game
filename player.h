@@ -16,7 +16,8 @@ protected:
     const float deceleration_factor;
     Color color;
     void update_pos(const Vector2 &v);
-    void set_acceleration();
+    void read_user_input();
+    void apply_acceleration();
     void set_velocity();
     const Vector2 get_kick_direction(const Vector2 &ball_pos) const;
 public:

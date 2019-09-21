@@ -51,7 +51,7 @@ void Player::update_pos(const Vector2 &v)
 }
 
 
-void Player::set_acceleration()
+void Player::read_user_input()
 {
     if (IsKeyDown(KEY_RIGHT) and IsKeyDown(KEY_LEFT))
         direction.x = 0;
@@ -70,33 +70,48 @@ void Player::set_acceleration()
         direction.y = 1;
     else
         direction.y = 0;
+}
 
-    acceleration.x = direction.x ? direction.x * acceleration_factor : 0;
-    acceleration.y = direction.y ? direction.y * acceleration_factor : 0;
+
+void Player::apply_acceleration()
+{
+    Vector2 norm_direction = normalize_vector(direction);
+    acceleration.x = norm_direction.x * acceleration_factor;
+    acceleration.y = norm_direction.y * acceleration_factor;
 }
 
 
 void Player::set_velocity()
 {
-    if (not direction.x and velocity.x)
+    if (acceleration.x)
+        velocity.x += acceleration.x;
+    else if (velocity.x > 0)
     {
-        velocity.x += (-velocity.x / abs(velocity.x)) * deceleration_factor;
-        // zero out so player doesnt move on values close to zero
-        if ((velocity.x > 0 && velocity.x < 0.1) || (velocity.x < 0 && velocity.x > -0.1))
+        velocity.x -= deceleration_factor;
+        if (velocity.x < 0)
             velocity.x = 0;
     }
-    else
-        velocity.x += acceleration.x;
-
-    if (not direction.y and velocity.y)
+    else if (velocity.x < 0)
     {
-        velocity.y += (-velocity.y / abs(velocity.y)) * deceleration_factor;
-        // zero out so player doesnt move on values close to zero
-        if ((velocity.y > 0 && velocity.y < 0.1) || (velocity.y < 0 && velocity.y > -0.1))
+        velocity.x += deceleration_factor;
+        if (velocity.x > 0)
+            velocity.x = 0;
+    }
+
+    if (acceleration.y)
+        velocity.y += acceleration.y;
+    else if (velocity.y > 0)
+    {
+        velocity.y -= deceleration_factor;
+        if (velocity.y < 0)
             velocity.y = 0;
     }
-    else
-        velocity.y += acceleration.y;
+    else if (velocity.y < 0)
+    {
+        velocity.y += deceleration_factor;
+        if (velocity.y > 0)
+            velocity.y = 0;
+    }
 
     limit_vector(velocity, max_speed);
 }
@@ -104,7 +119,8 @@ void Player::set_velocity()
 
 void Player::handle_movement_control(Ball & ball)
 {
-    set_acceleration();
+    read_user_input();
+    apply_acceleration();
     // Reset flag when ball comes outside rectangle's body
     if (ball_collision and !CheckCollisionCircleRec(ball.position, ball.radius, {position.x - size.x/2, position.y - size.y/2, size.x, size.y}))
         ball_collision = false;
@@ -148,12 +164,8 @@ void Player::handle_movement_control(Ball & ball)
             Vector2 desired_dir = normalize_vector({ball.position.x - position.x, ball.position.y - position.y});
             Vector2 desired_velocity = {desired_dir.x * speed, desired_dir.y * speed};
             acceleration = {desired_velocity.x - velocity.x, desired_velocity.y - velocity.y};
-            limit_vector(acceleration, acceleration_factor);
-            velocity.x += acceleration.x;
-            velocity.y += acceleration.y;
         }
-        else
-            set_velocity();
+        set_velocity();
         update_pos(velocity);
     }
     else if (dot_product(normalize_vector(velocity), normalize_vector(ball.velocity)) == -1)
@@ -169,11 +181,8 @@ void Player::handle_movement_control(Ball & ball)
         Vector2 desired_dir = normalize_vector({dx, dy});
         Vector2 desired_velocity = {desired_dir.x * max_speed, desired_dir.y * max_speed};
         acceleration = {desired_velocity.x - velocity.x, desired_velocity.y - velocity.y};
-        limit_vector(acceleration, acceleration_factor);
 
-        // Bypass calling set_velocity as it will slow down cause depends on user input
-        velocity.x += acceleration.x;
-        velocity.y += acceleration.y;
+        set_velocity();
         update_pos(velocity);
     }
 }
