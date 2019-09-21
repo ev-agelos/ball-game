@@ -106,7 +106,7 @@ void Player::handle_movement_control(Ball & ball)
 {
     set_acceleration();
     // Reset flag when ball comes outside rectangle's body
-    if (!CheckCollisionCircleRec(ball.position, ball.radius, {position.x - size.x/2, position.y - size.y/2, size.x, size.y}))
+    if (ball_collision and !CheckCollisionCircleRec(ball.position, ball.radius, {position.x - size.x/2, position.y - size.y/2, size.x, size.y}))
         ball_collision = false;
 
     if (ball.controlled_by != this)
