@@ -16,7 +16,7 @@ extern const float GOALPOST_HEIGHT_END;
 
 Ball::Ball(Sound sound)
     :
-    acceleration_factor(1),
+    acceleration_factor(4),
     friction_c(0.04),
     radius(5.f),
     acceleration({0, 0}),
@@ -92,28 +92,42 @@ void Ball::set_y(float val)
 
 void Ball::apply_acceleration()
 {
-    if (acceleration.x > acceleration_factor)
-        velocity.x += acceleration_factor;
-    else
-        velocity.x += acceleration.x;
-
-    if (acceleration.y > acceleration_factor)
-        velocity.y += acceleration_factor;
-    else
-        velocity.y += acceleration.y;
-
-    if (acceleration.x)
+    if (abs(acceleration.x) > acceleration_factor)
     {
-        acceleration.x -= acceleration_factor;
-        if (acceleration.x < 0)
-            acceleration.x = 0;
+        if (acceleration.x > 0)
+        {
+            velocity.x += acceleration_factor;
+            acceleration.x -= acceleration_factor;
+        }
+        else if (acceleration.x < 0)
+        {
+            velocity.x -= acceleration_factor;
+            acceleration.x += acceleration_factor;
+        }
     }
-        
-    if (acceleration.y)
+    else
     {
-        acceleration.y -= acceleration_factor;
-        if (acceleration.y < 0)
-            acceleration.y = 0;
+        velocity.x += acceleration.x;
+        acceleration.x = 0;
+    }
+
+    if (abs(acceleration.y) > acceleration_factor)
+    {
+        if (acceleration.y > 0)
+        {
+            velocity.y += acceleration_factor;
+            acceleration.y -= acceleration_factor;
+        }
+        else if (acceleration.y < 0)
+        {
+            velocity.y -= acceleration_factor;
+            acceleration.y += acceleration_factor;
+        }
+    }
+    else
+    {
+        velocity.y += acceleration.y;
+        acceleration.y = 0;
     }
 }
 
@@ -145,8 +159,8 @@ void Ball::update()
 
 void Ball::roll(const Vector2 & kick_direction, float power)
 {
-    acceleration.x = kick_direction.x * power;
-    acceleration.y = kick_direction.y * power;
+    acceleration.x = kick_direction.x * power - velocity.x;
+    acceleration.y = kick_direction.y * power - velocity.y;
 }
 
 
