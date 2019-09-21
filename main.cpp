@@ -20,6 +20,7 @@ extern const int GOALPOST_THICKNESS = 10;
 extern const float GOALPOST_HEIGHT_START = SCREENHEIGHT / 2 - 50;
 extern const float GOALPOST_HEIGHT_END = SCREENHEIGHT / 2 + 50;
 bool DEBUG = false;
+bool PAUSE = false;
 
 void draw(Player &p, Bot &bot, Ball &ball);
 
@@ -49,25 +50,30 @@ int main()
 
     while (!WindowShouldClose())
 	{
-        if (!IsSoundPlaying(crowd_sound))
-            PlaySound(crowd_sound);
-        p1.update(ball);
-        bot.update(ball, p1);
-
-        ball.update();
-        ball.check_collision(p1, bot);
-
-        if (ball.crossed_net)
-        {
-            PlaySound(crowd_goal_sound);
-            reset(p1, bot, ball);
-        }
+        if (IsKeyPressed(KEY_P))
+            PAUSE = !PAUSE;
         if (IsKeyPressed(KEY_R))
             reset(p1, bot, ball);
-
         if (IsKeyPressed(KEY_F))
             DEBUG = true;
 
+        if (!PAUSE)
+        {
+            if (!IsSoundPlaying(crowd_sound))
+                PlaySound(crowd_sound);
+            p1.update(ball);
+            bot.update(ball, p1);
+    
+            ball.update();
+            ball.check_collision(p1, bot);
+    
+            if (ball.crossed_net)
+            {
+                PlaySound(crowd_goal_sound);
+                reset(p1, bot, ball);
+            }
+    
+        }
         draw(p1, bot, ball);
     }
 
