@@ -21,6 +21,7 @@ extern const float GOALPOST_HEIGHT_START = SCREENHEIGHT / 2 - 50;
 extern const float GOALPOST_HEIGHT_END = SCREENHEIGHT / 2 + 50;
 bool DEBUG = false;
 bool PAUSE = false;
+int FPS_COUNTER = 0;
 
 void draw(Player &p, Bot &bot, Ball &ball);
 
@@ -72,8 +73,10 @@ int main()
                 PlaySound(crowd_goal_sound);
                 reset(p1, bot, ball);
             }
-    
         }
+        else
+            FPS_COUNTER++;
+
         draw(p1, bot, ball);
     }
 
@@ -124,9 +127,16 @@ void draw(Player & p, Bot & bot, Ball & ball)
     DrawLineEx(Vector2 {20, GOALPOST_HEIGHT_END + GOALPOST_THICKNESS}, Vector2 {20, SCREENHEIGHT - 20}, 1, GRAY);  // bottom left vertical
     DrawLineEx(Vector2{SCREENWIDTH - 20, GOALPOST_HEIGHT_END + GOALPOST_THICKNESS}, Vector2{SCREENWIDTH - 20, SCREENHEIGHT - 20}, 1, GRAY);  // bottom right vertical
 
+    // FPS
+    DrawFPS(1, 1);
+
+    // On pause, we draw a blinking message
+    if (PAUSE && ((FPS_COUNTER / 30) % 2))
+        DrawText("PAUSED", 350, 200, 30, GRAY);
+
+    // Forces for debugging purposes        
     if (DEBUG)
     {
-        // Forces for debugging purposes        
         DrawCircle(p.position.x, p.position.y, 2, RED);
         DrawCircle(ball.position.x, ball.position.y, 2, RED);
         float mag = get_magnitude(ball.velocity) * 2;
