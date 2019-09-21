@@ -55,7 +55,7 @@ int main()
         if (IsKeyPressed(KEY_R))
             reset(p1, bot, ball);
         if (IsKeyPressed(KEY_F))
-            DEBUG = true;
+            DEBUG = !DEBUG;
 
         if (!PAUSE)
         {
