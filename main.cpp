@@ -4,6 +4,7 @@
 #include "player.h"
 #include "bot.h"
 #include "ball.h"
+#include "utils.h"
 
 const int SCREENWIDTH = 800;
 const int SCREENHEIGHT = 450;
@@ -18,8 +19,9 @@ const int POWERBAR_BOTTOM_OFFSET = 15;
 extern const int GOALPOST_THICKNESS = 10;
 extern const float GOALPOST_HEIGHT_START = SCREENHEIGHT / 2 - 50;
 extern const float GOALPOST_HEIGHT_END = SCREENHEIGHT / 2 + 50;
+bool DEBUG = false;
 
-void draw(Player & p, Bot & bot, Ball & ball);
+void draw(Player &p, Bot &bot, Ball &ball);
 
 
 void reset(Player &p, Bot &bot, Ball &ball)
@@ -62,6 +64,9 @@ int main()
         }
         if (IsKeyPressed(KEY_R))
             reset(p1, bot, ball);
+
+        if (IsKeyPressed(KEY_F))
+            DEBUG = true;
 
         draw(p1, bot, ball);
     }
@@ -112,6 +117,15 @@ void draw(Player & p, Bot & bot, Ball & ball)
 
     DrawLineEx(Vector2 {20, GOALPOST_HEIGHT_END + GOALPOST_THICKNESS}, Vector2 {20, SCREENHEIGHT - 20}, 1, GRAY);  // bottom left vertical
     DrawLineEx(Vector2{SCREENWIDTH - 20, GOALPOST_HEIGHT_END + GOALPOST_THICKNESS}, Vector2{SCREENWIDTH - 20, SCREENHEIGHT - 20}, 1, GRAY);  // bottom right vertical
+
+    if (DEBUG)
+    {
+        // Forces for debugging purposes        
+        DrawCircle(p.position.x, p.position.y, 2, RED);
+        DrawCircle(ball.position.x, ball.position.y, 2, RED);
+        float mag = get_magnitude(ball.velocity) * 2;
+        DrawLineV(ball.position, {ball.position.x + (mag * ball.velocity.x), ball.position.y + (mag * ball.velocity.y)}, RED);
+    } 
 
     EndDrawing();
 }
