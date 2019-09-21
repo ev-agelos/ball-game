@@ -27,13 +27,10 @@ float dot_product(const Vector2 &v1, const Vector2 &v2)
 
 void limit_vector(Vector2 &v, float limit)
 {
-    if (v.x > limit)
-        v.x = limit;
-    else if (v.x < -limit)
-        v.x = -limit;
-
-    if (v.y > limit)
-        v.y = limit;
-    else if (v.y < -limit)
-        v.y = -limit;
+    if (get_magnitude(v) > limit)
+    {
+        Vector2 norm_vector = normalize_vector(v);
+        v.x = norm_vector.x * limit;
+        v.y = norm_vector.y * limit;
+    }
 }
