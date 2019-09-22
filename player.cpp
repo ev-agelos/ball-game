@@ -36,6 +36,7 @@ void Player::setup()
     position.y = GetRandomValue(TOP_BOUND + size.y/2, BOTTOM_BOUND - size.y/2);
     velocity.x = 0;
     velocity.y = 0;
+    power = 0;
 }
 
 

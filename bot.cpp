@@ -21,6 +21,7 @@ void Bot::setup()
     position.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND - size.y);
     velocity.x = 0;
     velocity.y = 0;
+    power = 0;
 }
 
 
