@@ -181,6 +181,7 @@ void Player::handle_movement_control(Ball & ball)
         Vector2 desired_dir = normalize_vector({dx, dy});
         Vector2 desired_velocity = {desired_dir.x * max_speed, desired_dir.y * max_speed};
         acceleration = {desired_velocity.x - velocity.x, desired_velocity.y - velocity.y};
+        limit_vector(acceleration, acceleration_factor);
 
         set_velocity();
         update_pos(velocity);
