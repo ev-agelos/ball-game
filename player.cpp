@@ -125,7 +125,7 @@ void Player::handle_movement_control(Ball & ball)
     if (ball_collision and !CheckCollisionCircleRec(ball.position, ball.radius, {position.x - size.x/2, position.y - size.y/2, size.x, size.y}))
         ball_collision = false;
 
-    if (ball.controlled_by != this)
+    if (ball.controlled_by != this or ball_collision)
     {
         set_velocity();
         update_pos(velocity);
