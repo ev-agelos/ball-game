@@ -119,7 +119,6 @@ void Player::set_velocity()
 
 void Player::handle_movement_control(Ball & ball)
 {
-    read_user_input();
     apply_acceleration();
     // Reset flag when ball comes outside rectangle's body
     if (ball_collision and !CheckCollisionCircleRec(ball.position, ball.radius, {position.x - size.x/2, position.y - size.y/2, size.x, size.y}))
@@ -145,13 +144,8 @@ void Player::handle_movement_control(Ball & ball)
             else
                 ball.roll(get_kick_direction(ball.position), 3);
             ball_collision = true;
+            return;
         }
-        else
-        {
-            set_velocity();
-            update_pos(velocity);
-        }
-        
     }
     else if (!direction.x and !direction.y)  // no input so slow down
     {
@@ -165,13 +159,6 @@ void Player::handle_movement_control(Ball & ball)
             Vector2 desired_velocity = {desired_dir.x * speed, desired_dir.y * speed};
             acceleration = {desired_velocity.x - velocity.x, desired_velocity.y - velocity.y};
         }
-        set_velocity();
-        update_pos(velocity);
-    }
-    else if (dot_product(normalize_vector(velocity), normalize_vector(ball.velocity)) == -1)
-    {
-        set_velocity();
-        update_pos(velocity);
     }
     else
     {
@@ -182,15 +169,15 @@ void Player::handle_movement_control(Ball & ball)
         Vector2 desired_velocity = {desired_dir.x * max_speed, desired_dir.y * max_speed};
         acceleration = {desired_velocity.x - velocity.x, desired_velocity.y - velocity.y};
         limit_vector(acceleration, acceleration_factor);
-
-        set_velocity();
-        update_pos(velocity);
     }
+    set_velocity();
+    update_pos(velocity);
 }
 
 
 void Player::update(Ball & ball)
 {
+    read_user_input();
     handle_movement_control(ball);
 
     if (IsKeyDown(KEY_S) && power < 100)
