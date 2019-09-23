@@ -137,7 +137,7 @@ void Player::handle_movement_control(Ball & ball)
     {
         if (!ball_collision) // avoid calling roll() while ball is inside rectangle's body
         {
-            if (power && IsKeyUp(KEY_S))
+            if (power && IsKeyUp(KEY_D))
             {
                 ball.kick(get_kick_direction(ball.position), power);
                 power = 0;
@@ -181,7 +181,7 @@ void Player::update(Ball & ball)
     read_user_input();
     handle_movement_control(ball);
 
-    if (IsKeyDown(KEY_S) && power < 100)
+    if (IsKeyDown(KEY_D) && power < 100)
         power += 1;
 }
 
