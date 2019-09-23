@@ -17,7 +17,7 @@ extern const float GOALPOST_HEIGHT_END;
 Ball::Ball(Sound sound)
     :
     acceleration_factor(4),
-    friction_c(0.04),
+    friction_c(0.02),
     radius(5.f),
     acceleration({0, 0}),
     friction({0, 0}),
