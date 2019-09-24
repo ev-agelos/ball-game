@@ -38,6 +38,7 @@ void Ball::setup()
     velocity.x = 0;
     velocity.y = 0;
     crossed_net = false;
+    controlled_by = nullptr;
 }
 
 
