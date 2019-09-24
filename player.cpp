@@ -125,7 +125,7 @@ void Player::handle_movement_control(Ball & ball)
     if (ball_collision and !CheckCollisionCircleRec(ball.position, ball.radius, {position.x - size.x/2, position.y - size.y/2, size.x, size.y}))
         ball_collision = false;
 
-    if (ball.controlled_by != this or ball_collision)
+    if (ball.controlled_by != this)
     {
         set_velocity();
         update_pos(velocity);
@@ -147,6 +147,10 @@ void Player::handle_movement_control(Ball & ball)
             ball_collision = true;
             return;
         }
+
+        // don't allow player to change direction while ball is inside his rectangle
+        if (dot_product(normalize_vector(velocity), normalize_vector(direction)) != -1)
+            return;
     }
     else if (!direction.x and !direction.y)  // no input so slow down
     {
