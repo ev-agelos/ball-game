@@ -135,22 +135,33 @@ void Player::handle_movement_control(Ball & ball)
     // User controls the ball
     if (CheckCollisionCircleRec(ball.position, ball.radius, {position.x - size.x/2, position.y - size.y/2, size.x, size.y}))
     {
-        if (!ball_collision) // avoid calling roll() while ball is inside rectangle's body
+        if (!ball_collision)
         {
+            // check if ball will go through player's rectangle to avoid calling roll() multiple times
+            float nearest_x = std::max(position.x - size.x / 2, std::min(ball.position.x, position.x + size.x / 2));
+            float nearest_y = std::max(position.y - size.y/2, std::min(ball.position.y, position.y + size.y/2));
+            float dx = ball.position.x - nearest_x;
+            float dy = ball.position.y - nearest_y;
+            Vector2 player_ball_direction = normalize_vector({dx, dy});
+            Vector2 kick_direction = get_kick_direction(ball.position);
+            if (dot_product(kick_direction, player_ball_direction) == -1)
+                ball_collision = true;
+
             if (power && IsKeyUp(KEY_D))
             {
-                ball.kick(get_kick_direction(ball.position), power);
+                ball.kick(kick_direction, power);
                 power = 0;
             }
             else
-                ball.roll(get_kick_direction(ball.position), 3);
-            ball_collision = true;
+                ball.roll(kick_direction, 3);
+
             return;
         }
 
-        // don't allow player to change direction while ball is inside his rectangle
-        if (dot_product(normalize_vector(velocity), normalize_vector(direction)) != -1)
-            return;
+        // don't allow player to change direction while ball goes through his rectangle
+        Vector2 norm_ball_velocity = normalize_vector(ball.velocity);
+        direction = {-norm_ball_velocity.x, -norm_ball_velocity.y};
+        apply_acceleration();
     }
     else if (!direction.x and !direction.y)  // no input so slow down
     {
