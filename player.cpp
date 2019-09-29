@@ -24,7 +24,7 @@ Player::Player()
     deceleration_factor(0.05),
     max_speed(2.f),
     rec{0, 0, 20, 20},
-    direction{0, 0},
+    input{0, 0},
     velocity{0, 0},
     power(0)
 {
@@ -56,32 +56,32 @@ void Player::update_pos(const Vector2 &v)
 void Player::read_user_input()
 {
     if (IsKeyDown(KEY_RIGHT) and IsKeyDown(KEY_LEFT))
-        direction.x = 0;
+        input.x = 0;
     else if (IsKeyDown(KEY_RIGHT))
-        direction.x = 1;
+        input.x = 1;
     else if (IsKeyDown(KEY_LEFT))
-        direction.x = -1;
+        input.x = -1;
     else
-        direction.x = 0;
+        input.x = 0;
 
     if (IsKeyDown(KEY_UP) and IsKeyDown(KEY_DOWN))
-        direction.y = 0;
+        input.y = 0;
     else if (IsKeyDown(KEY_UP))
-        direction.y = -1;
+        input.y = -1;
     else if (IsKeyDown(KEY_DOWN))
-        direction.y = 1;
+        input.y = 1;
     else
-        direction.y = 0;
+        input.y = 0;
 }
 
 
 void Player::apply_acceleration()
 {
-    if (!direction.x and !direction.y)
+    if (!input.x and !input.y)
         return;
 
-    Vector2 norm_direction = Vector2Normalize(direction);
-    acceleration = Vector2Scale(norm_direction, acceleration_factor);
+    Vector2 norm_input = Vector2Normalize(input);
+    acceleration = Vector2Scale(norm_input, acceleration_factor);
 }
 
 
@@ -160,7 +160,7 @@ void Player::handle_movement_control(Ball & ball)
             ball.controlled_by = this;
         }
     }
-    else if (!direction.x and !direction.y)
+    else if (!input.x and !input.y)
     {
         float nearest_x = Clamp(ball.position.x, rec.x, rec.x + rec.width);
         float nearest_y = Clamp(ball.position.y, rec.y, rec.y + rec.height);
@@ -220,8 +220,8 @@ void Player::update(Ball & ball)
 
 const Vector2 Player::get_kick_direction(const Vector2 &ball_pos) const
 {
-    if (direction.x || direction.y)
-        return Vector2Normalize(direction);
+    if (input.x || input.y)
+        return Vector2Normalize(input);
     else
     {
         Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};

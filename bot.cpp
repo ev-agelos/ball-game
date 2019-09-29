@@ -27,27 +27,4 @@ void Bot::setup()
 
 void Bot::update(Ball &ball, Player &p)
 {
-    //if (has_ball)
-    //{
-    //    Vector2 power;
-    //    power.x = -GetRandomValue(50, 100);
-    //    power.y = GetRandomValue(50, 100);
-    //    ball.kick(power);
-    //    return;
-    //}
-
-    //if (ball.direction.x <= 0)
-    //{
-    //    if (position.x > ((RIGHT_BOUND - LEFT_BOUND)/2 + LEFT_BOUND)  && ((ball.position.x + ball.radius) < position.x))
-    //        set_x(position.x - movement_speed);
-    //}
-    //else
-    //    // fall back
-    //    set_x(position.x + movement_speed);
-
-    //// move relative to ball
-    //if ((ball.radius + ball.position.y) < (position.y + 20))
-    //    set_y(position.y - movement_speed);
-    //else if ((ball.radius + ball.position.y) > (position.y + 20))
-    //    set_y(position.y + movement_speed);
 }

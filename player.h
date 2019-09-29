@@ -24,7 +24,7 @@ public:
     float max_speed;
     Player();
     Rectangle rec;
-    Vector2 direction;
+    Vector2 input;
     Vector2 velocity;
     int power;
     virtual void setup();
