@@ -99,8 +99,8 @@ void draw(Player & p, Bot & bot, Ball & ball)
     DrawText(FormatText("Score: %01i - %01i", ball.left_score, ball.right_score), SCREENWIDTH/2 - 60, SCREENHEIGHT - 18, 19, RED);
 
     // players and ball
-    DrawRectangleV({p.position.x - p.size.x/2, p.position.y - p.size.y/2}, p.size, GREEN);
-    DrawRectangleV({bot.position.x - bot.size.x/2, bot.position.y - bot.size.y/2}, bot.size, BLUE);
+    DrawRectangleRec(p.rec, GREEN);
+    DrawRectangleRec(bot.rec, BLUE);
     DrawCircleV(ball.position, ball.radius, RAYWHITE);
 
     // power bars
@@ -138,7 +138,7 @@ void draw(Player & p, Bot & bot, Ball & ball)
     // Forces for debugging purposes        
     if (DEBUG)
     {
-        DrawCircle(p.position.x, p.position.y, 2, RED);
+        DrawCircle(p.rec.x + p.rec.width / 2, p.rec.y + p.rec.height / 2, 2, RED);
         DrawCircle(ball.position.x, ball.position.y, 2, RED);
         float mag = Vector2Length(ball.velocity) * 2;
         DrawLineV(ball.position, {ball.position.x + (mag * ball.velocity.x), ball.position.y + (mag * ball.velocity.y)}, RED);

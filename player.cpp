@@ -23,8 +23,7 @@ Player::Player()
     acceleration_factor(0.1),
     deceleration_factor(0.05),
     max_speed(2.f),
-    position{0, 0},
-    size{20, 20},
+    rec{0, 0, 20, 20},
     direction{0, 0},
     velocity{0, 0},
     power(0)
@@ -34,8 +33,8 @@ Player::Player()
 
 void Player::setup()
 {
-    position.x = GetRandomValue(LEFT_BOUND + size.x/2, ((RIGHT_BOUND - LEFT_BOUND - size.x/2) / 2) + LEFT_BOUND);
-    position.y = GetRandomValue(TOP_BOUND + size.y/2, BOTTOM_BOUND - size.y/2);
+    rec.x = GetRandomValue(LEFT_BOUND + rec.width/2, ((RIGHT_BOUND - LEFT_BOUND - rec.width/2) / 2) + LEFT_BOUND);
+    rec.y = GetRandomValue(TOP_BOUND + rec.height/2, BOTTOM_BOUND - rec.height/2);
     velocity.x = 0;
     velocity.y = 0;
     power = 0;
@@ -44,13 +43,13 @@ void Player::setup()
 
 void Player::update_pos(const Vector2 &v)
 {
-    float new_x = position.x + v.x;
-    if ((new_x - size.x/2) >= LEFT_BOUND && (new_x + size.x/2) <= RIGHT_BOUND)
-        position.x = new_x;
+    float new_x = rec.x + v.x;
+    if (new_x >= LEFT_BOUND && (new_x + rec.width) <= RIGHT_BOUND)
+        rec.x = new_x;
 
-    float new_y = position.y + v.y;
-    if ((new_y - size.y/2) >= TOP_BOUND && (new_y + size.y/2) <= BOTTOM_BOUND)
-        position.y = new_y;
+    float new_y = rec.y + v.y;
+    if (new_y >= TOP_BOUND && (new_y + rec.height) <= BOTTOM_BOUND)
+        rec.y = new_y;
 }
 
 
@@ -139,7 +138,6 @@ void Player::kick(Ball &ball)
 
 void Player::handle_movement_control(Ball & ball)
 {
-    Rectangle rec = {position.x - size.x / 2, position.y - size.y / 2, size.x, size.y};
     if (!CheckCollisionCircleRec(ball.position, ball.radius, rec))
         ball_inside_rectangle = false;
 
@@ -151,10 +149,11 @@ void Player::handle_movement_control(Ball & ball)
         if (!velocity.x and !velocity.y)
             return;
 
-        Vector2 last_position = position;
+        Vector2 last_position = {rec.x, rec.y};
         Vector2 last_velocity = velocity;
         velocity = get_constrained_velocity(ball, velocity);
-        position = last_position;
+        rec.x = last_position.x;
+        rec.y = last_position.y;
         if (velocity.x != last_velocity.x or velocity.y != last_velocity.y)
         {
             kick(ball);
@@ -163,13 +162,14 @@ void Player::handle_movement_control(Ball & ball)
     }
     else if (!direction.x and !direction.y)
     {
-        float nearest_x = Clamp(ball.position.x, position.x - size.x / 2, position.x + size.x / 2);
-        float nearest_y = Clamp(ball.position.y, position.y - size.y / 2, position.y + size.y / 2);
+        float nearest_x = Clamp(ball.position.x, rec.x, rec.x + rec.width);
+        float nearest_y = Clamp(ball.position.y, rec.y, rec.y + rec.height);
         float distance = Vector2Length({ball.position.x - nearest_x, ball.position.y - nearest_y}) - ball.radius - 1;  // -1 so they don't collide
         if (distance < APPROACH_RADIUS)
         {
             float speed = distance / APPROACH_RADIUS * max_speed;
-            Vector2 desired_dir = Vector2Normalize(Vector2Subtract(ball.position, position));
+            Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
+            Vector2 desired_dir = Vector2Normalize(Vector2Subtract(ball.position, rec_center));
             Vector2 desired_velocity = Vector2Scale(desired_dir, speed);
             acceleration = Vector2Subtract(desired_velocity, velocity);
         }
@@ -182,17 +182,19 @@ void Player::handle_movement_control(Ball & ball)
     }
     else
     {
-        Vector2 diff = Vector2Subtract(ball.position, position);
+        Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
+        Vector2 diff = Vector2Subtract(ball.position, rec_center);
         Vector2 desired_dir = Vector2Normalize(diff);
         Vector2 desired_velocity = Vector2Scale(desired_dir, max_speed);
         acceleration = Vector2Subtract(desired_velocity, velocity);
         limit_vector(acceleration, acceleration_factor);
         set_velocity();
 
-        Vector2 last_position = position;
+        Vector2 last_position = {rec.x, rec.y};
         Vector2 last_velocity = velocity;
         velocity = get_constrained_velocity(ball, velocity);
-        position = last_position;
+        rec.x = last_position.x;
+        rec.y = last_position.y;
         if (velocity.x != last_velocity.x or velocity.y != last_velocity.y)
         {
             kick(ball);
@@ -221,14 +223,17 @@ const Vector2 Player::get_kick_direction(const Vector2 &ball_pos) const
     if (direction.x || direction.y)
         return Vector2Normalize(direction);
     else
-        return Vector2Normalize(Vector2Subtract(ball_pos, position));
+    {
+        Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
+        return Vector2Normalize(Vector2Subtract(ball_pos, rec_center));
+    }
 }
 
 
-float get_penetration_distance(Vector2 rec_pos, Vector2 rec_size, Vector2 ball_pos, float ball_radius)
+float get_penetration_distance(Rectangle rec, Vector2 ball_pos, float ball_radius)
 {
-    float nearest_x = Clamp(ball_pos.x, rec_pos.x - rec_size.x / 2, rec_pos.x + rec_size.x / 2);
-    float nearest_y = Clamp(ball_pos.y, rec_pos.y - rec_size.y / 2, rec_pos.y + rec_size.y / 2);
+    float nearest_x = Clamp(ball_pos.x, rec.x, rec.x + rec.width);
+    float nearest_y = Clamp(ball_pos.y, rec.y, rec.y + rec.height);
     float distance = Vector2Length({ball_pos.x - nearest_x, ball_pos.y - nearest_y});
     return ball_radius - distance;
 }
@@ -237,25 +242,29 @@ float get_penetration_distance(Vector2 rec_pos, Vector2 rec_size, Vector2 ball_p
 Vector2 Player::get_constrained_velocity(Ball &ball, Vector2 new_velocity)
 {
     float distance = Vector2Length(new_velocity);
+    float remaining = distance;
     Vector2 norm_new_velocity = Vector2Normalize(new_velocity);
-    for (int i = 0; i <= distance; i++)
+    for (int travelled = 0; travelled <= distance; travelled++)
     {
-        Vector2 next_pos = {position.x + (i * norm_new_velocity.x), position.y + (i * norm_new_velocity.y)};
-        Rectangle rec = {next_pos.x - size.x / 2, next_pos.y - size.y / 2, size.x, size.y};
+        rec.x += norm_new_velocity.x;
+        rec.y += norm_new_velocity.y;
         if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
         {
-            float penetration_distance = get_penetration_distance(next_pos, size, ball.position, ball.radius);
-            return Vector2Scale(norm_new_velocity, (i - penetration_distance));
+            float penetration = get_penetration_distance(rec, ball.position, ball.radius);
+            return Vector2Scale(norm_new_velocity, (travelled - penetration));
         }
+        remaining -= travelled;
     }
 
-    // check distance in case it is a float ex: 5.2
-    Vector2 next_pos = {position.x + (distance * norm_new_velocity.x), position.y + (distance * norm_new_velocity.y)};
-    Rectangle rec = {next_pos.x - size.x / 2, next_pos.y - size.y / 2, size.x, size.y};
-    if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
+    if (remaining)
     {
-        float penetration_distance = get_penetration_distance(next_pos, size, ball.position, ball.radius);
-        return Vector2Scale(norm_new_velocity, (distance - penetration_distance));
+        rec.x += remaining * norm_new_velocity.x;
+        rec.y += remaining * norm_new_velocity.y;
+        if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
+        {
+            float penetration = get_penetration_distance(rec, ball.position, ball.radius);
+            return Vector2Scale(norm_new_velocity, (distance - penetration));
+        }
     }
 
     return new_velocity;  // no collision

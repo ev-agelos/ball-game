@@ -17,8 +17,8 @@ Bot::Bot() : Player()
 
 void Bot::setup()
 {
-    position.x = GetRandomValue(((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND, RIGHT_BOUND - size.x);
-    position.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND - size.y);
+    rec.x = GetRandomValue(((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND, RIGHT_BOUND - rec.width);
+    rec.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND - rec.height);
     velocity.x = 0;
     velocity.y = 0;
     power = 0;
