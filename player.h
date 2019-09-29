@@ -8,7 +8,7 @@ class Player
 {
 private:
     void handle_movement_control(Ball & ball);
-    bool ball_collision;
+    bool ball_inside_rectangle;
 
 protected:
     Vector2 acceleration;
@@ -30,4 +30,6 @@ public:
     int power;
     virtual void setup();
     void update(Ball & ball);
+    Vector2 get_constrained_velocity(Ball &ball, Vector2 new_velocity);
+    void kick(Ball &ball);
 };
