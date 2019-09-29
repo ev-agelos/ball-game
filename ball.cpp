@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <raylib.h>
+#include <raymath.h>
 #include "ball.h"
 #include "player.h"
 #include "bot.h"
@@ -19,9 +20,10 @@ Ball::Ball(Sound sound)
     acceleration_factor(4),
     friction_c(0.02),
     radius(5.f),
-    acceleration({0, 0}),
-    friction({0, 0}),
-    velocity({0, 0}),
+    position{0, 0},
+    acceleration{0, 0},
+    friction{0, 0},
+    velocity{0, 0},
     controlled_by(nullptr),
     crossed_net(false),
     left_score(0),
@@ -135,17 +137,18 @@ void Ball::apply_acceleration()
 
 void Ball::apply_friction()
 {
-    Vector2 norm_velocity = normalize_vector(velocity);
-    friction.x = norm_velocity.x * friction_c * -1;
-    friction.y = norm_velocity.y * friction_c * -1;
-    
+    if (!velocity.x and !velocity.y)
+        return;
+
+    Vector2 norm_velocity = Vector2Normalize(velocity);
+    friction = Vector2Scale(norm_velocity, friction_c * -1);
+
     if (abs(friction.x) >= abs(velocity.x))
         velocity.x = friction.x = 0;
     if (abs(friction.y) >= abs(velocity.y))
         velocity.y = friction.y = 0;
 
-    velocity.x += friction.x;
-    velocity.y += friction.y;
+    velocity = Vector2Add(velocity, friction);
 }
 
 
@@ -160,8 +163,8 @@ void Ball::update()
 
 void Ball::roll(const Vector2 & kick_direction, float power)
 {
-    acceleration.x = kick_direction.x * power - velocity.x;
-    acceleration.y = kick_direction.y * power - velocity.y;
+    Vector2 kick_velocity = Vector2Scale(kick_direction, power);
+    acceleration = Vector2Subtract(kick_velocity, velocity);
 }
 
 
@@ -188,8 +191,7 @@ void Ball::check_collision(Player & p, Bot & bot)
         else
         {
             controlled_by = &p;
-            velocity.x = 0;
-            velocity.y = 0;
+            velocity = Vector2Zero();
         }
     }
     else if (controlled_by != &bot && CheckCollisionCircleRec(position, radius, {bot.position.x - bot.size.x/2, bot.position.y - bot.size.y/2, bot.size.x, bot.size.y}))

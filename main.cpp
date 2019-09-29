@@ -1,5 +1,6 @@
 #include <iostream>
 #include "raylib.h"
+#include "raymath.h"
 
 #include "player.h"
 #include "bot.h"
@@ -139,7 +140,7 @@ void draw(Player & p, Bot & bot, Ball & ball)
     {
         DrawCircle(p.position.x, p.position.y, 2, RED);
         DrawCircle(ball.position.x, ball.position.y, 2, RED);
-        float mag = get_magnitude(ball.velocity) * 2;
+        float mag = Vector2Length(ball.velocity) * 2;
         DrawLineV(ball.position, {ball.position.x + (mag * ball.velocity.x), ball.position.y + (mag * ball.velocity.y)}, RED);
     } 
 
