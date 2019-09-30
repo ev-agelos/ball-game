@@ -20,7 +20,6 @@ extern int RIGHT_SCORE;
 
 Ball::Ball(Sound sound)
     :
-    acceleration_factor(4),
     friction_c(0.02),
     radius(5.f),
     position{0, 0},
@@ -95,7 +94,6 @@ void Ball::set_y(float val)
 
 void Ball::apply_acceleration()
 {
-    limit_vector(acceleration, acceleration_factor);
     velocity = Vector2Add(velocity, acceleration);
     acceleration = {0, 0};
 }
@@ -147,7 +145,6 @@ void Ball::check_collision(Player & p, Bot & bot)
 
     if (CheckCollisionCircleRec(position, radius, p.rec))
     {
-        
         if (abs(velocity.x) > p.max_speed or abs(velocity.y) > p.max_speed)
             velocity = Vector2Negate(velocity);
         else

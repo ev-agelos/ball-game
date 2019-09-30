@@ -7,7 +7,6 @@ class Bot;
 
 class Ball {
 private:
-    const float acceleration_factor;
     const float friction_c;
 
 public:
