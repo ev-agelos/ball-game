@@ -29,6 +29,6 @@ public:
     int power;
     virtual void setup();
     void update(Ball & ball);
-    Vector2 get_constrained_velocity(Ball &ball, Vector2 new_velocity);
+    bool is_velocity_constrained(Ball &ball, Vector2 new_velocity);
     void kick(Ball &ball);
 };

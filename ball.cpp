@@ -58,7 +58,6 @@ void Ball::set_x(float val)
     else
     {
         position.x = val;
-
         if (!crossed_net)
         {
             if (position.x < LEFT_BOUND)
@@ -73,7 +72,6 @@ void Ball::set_x(float val)
             }
         }
     }
-
     controlled_by = nullptr;
 }
 
@@ -123,7 +121,7 @@ void Ball::update()
 }
 
 
-void Ball::roll(const Vector2 & kick_direction, float power)
+void Ball::roll(const Vector2 &kick_direction, float power)
 {
     Vector2 kick_velocity = Vector2Scale(kick_direction, power);
     acceleration = Vector2Subtract(kick_velocity, velocity);
@@ -138,7 +136,7 @@ void Ball::kick(const Vector2 &kick_direction, float power)
 }
 
 
-void Ball::check_collision(Player & p, Bot & bot)
+void Ball::check_collision(Player &p, Bot &bot)
 {
     if (controlled_by != nullptr)
         return;

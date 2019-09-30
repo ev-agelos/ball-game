@@ -121,6 +121,7 @@ void Player::handle_movement_control(Ball & ball)
         ball_inside_rectangle = false;
 
     apply_acceleration();
+    Vector2 last_velocity = velocity;
 
     if (ball.controlled_by != this)
     {
@@ -128,15 +129,11 @@ void Player::handle_movement_control(Ball & ball)
         if (!velocity.x and !velocity.y)
             return;
 
-        Vector2 last_position = {rec.x, rec.y};
-        Vector2 last_velocity = velocity;
-        velocity = get_constrained_velocity(ball, velocity);
-        rec.x = last_position.x;
-        rec.y = last_position.y;
-        // avoid moving backwards because ball is approaching towards player
-        if (Vector2DotProduct(Vector2Normalize(velocity), Vector2Normalize(last_velocity)) == 1)
+        Vector2 unconstrained_velocity = velocity;
+        if (is_velocity_constrained(ball, Vector2Subtract(velocity, last_velocity)))
         {
-            if (velocity.x != last_velocity.x or velocity.y != last_velocity.y)
+            // avoid moving backwards because ball is approaching towards player
+            if (velocity.x * unconstrained_velocity.x < 0 or velocity.y * unconstrained_velocity.y < 0)
             {
                 kick(ball);
                 ball.controlled_by = this;
@@ -171,19 +168,15 @@ void Player::handle_movement_control(Ball & ball)
         Vector2 desired_velocity = Vector2Scale(desired_dir, max_speed);
         acceleration = Vector2Subtract(desired_velocity, velocity);
         limit_vector(acceleration, acceleration_factor);
-        set_velocity();
 
-        Vector2 last_position = {rec.x, rec.y};
-        Vector2 last_velocity = velocity;
-        velocity = get_constrained_velocity(ball, velocity);
-        rec.x = last_position.x;
-        rec.y = last_position.y;
-        if (velocity.x != last_velocity.x or velocity.y != last_velocity.y)
+        set_velocity();
+        Vector2 unconstrained_velocity = velocity;
+        if (is_velocity_constrained(ball, Vector2Subtract(velocity, last_velocity)))
         {
             kick(ball);
-            if (velocity.x * ball.acceleration.x < 0 or velocity.y * ball.acceleration.y < 0)
+            if (velocity.x * unconstrained_velocity.x < 0 or velocity.y * unconstrained_velocity.y < 0)
             {
-                velocity = last_velocity;
+                velocity = unconstrained_velocity;
                 ball_inside_rectangle = true;
             }
         }
@@ -222,33 +215,36 @@ float get_penetration_distance(Rectangle rec, Vector2 ball_pos, float ball_radiu
 }
 
 
-Vector2 Player::get_constrained_velocity(Ball &ball, Vector2 new_velocity)
+bool Player::is_velocity_constrained(Ball &ball, Vector2 new_velocity)
 {
     float distance = Vector2Length(new_velocity);
     float remaining = distance;
-    Vector2 norm_new_velocity = Vector2Normalize(new_velocity);
+    Vector2 direction = Vector2Normalize(new_velocity);
     for (int travelled = 0; travelled <= distance; travelled++)
     {
-        rec.x += norm_new_velocity.x;
-        rec.y += norm_new_velocity.y;
+        rec.x += direction.x;
+        rec.y += direction.y;
         if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
         {
             float penetration = get_penetration_distance(rec, ball.position, ball.radius);
-            return Vector2Scale(norm_new_velocity, (travelled - penetration));
+            velocity = Vector2Scale(direction, (travelled - penetration));
+            return true;
         }
         remaining -= travelled;
     }
 
     if (remaining)
     {
-        rec.x += remaining * norm_new_velocity.x;
-        rec.y += remaining * norm_new_velocity.y;
+        rec.x += remaining * direction.x;
+        rec.y += remaining * direction.y;
         if (CheckCollisionCircleRec(ball.position, ball.radius, rec))
         {
             float penetration = get_penetration_distance(rec, ball.position, ball.radius);
-            return Vector2Scale(norm_new_velocity, (distance - penetration));
+            velocity = Vector2Scale(direction, (distance - penetration));
+            return true;
         }
     }
 
-    return new_velocity;  // no collision
+    velocity = new_velocity;
+    return false; // no collision
 }
