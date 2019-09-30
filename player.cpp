@@ -33,10 +33,9 @@ Player::Player()
 
 void Player::setup()
 {
-    rec.x = GetRandomValue(LEFT_BOUND + rec.width/2, ((RIGHT_BOUND - LEFT_BOUND - rec.width/2) / 2) + LEFT_BOUND);
-    rec.y = GetRandomValue(TOP_BOUND + rec.height/2, BOTTOM_BOUND - rec.height/2);
-    velocity.x = 0;
-    velocity.y = 0;
+    rec.x = GetRandomValue(LEFT_BOUND + rec.width / 2, ((RIGHT_BOUND - LEFT_BOUND - rec.width / 2) / 2) + LEFT_BOUND);
+    rec.y = GetRandomValue(TOP_BOUND + rec.height / 2, BOTTOM_BOUND - rec.height / 2);
+    velocity = {0, 0};
     power = 0;
 }
 
@@ -77,47 +76,29 @@ void Player::read_user_input()
 
 void Player::apply_acceleration()
 {
-    if (!input.x and !input.y)
-        return;
-
-    Vector2 norm_input = Vector2Normalize(input);
-    acceleration = Vector2Scale(norm_input, acceleration_factor);
+    if (input.x or input.y)
+    {
+        Vector2 norm_input = Vector2Normalize(input);
+        acceleration = Vector2Scale(norm_input, acceleration_factor);
+    }
+    else
+        acceleration = {0, 0};
 }
 
 
 void Player::set_velocity()
 {
-    if (acceleration.x)
-        velocity.x += acceleration.x;
-    else if (velocity.x > 0)
-    {
-        velocity.x -= deceleration_factor;
-        if (velocity.x < 0)
-            velocity.x = 0;
-    }
-    else if (velocity.x < 0)
-    {
-        velocity.x += deceleration_factor;
-        if (velocity.x > 0)
-            velocity.x = 0;
-    }
-
-    if (acceleration.y)
-        velocity.y += acceleration.y;
-    else if (velocity.y > 0)
-    {
-        velocity.y -= deceleration_factor;
-        if (velocity.y < 0)
-            velocity.y = 0;
-    }
-    else if (velocity.y < 0)
-    {
-        velocity.y += deceleration_factor;
-        if (velocity.y > 0)
-            velocity.y = 0;
-    }
-
+    velocity = Vector2Add(velocity, acceleration);
+    if (!velocity.x and !velocity.y)
+        return;
+    
     limit_vector(velocity, max_speed);
+
+    if (!acceleration.x and !acceleration.y)
+    {
+        float length = Vector2Length(velocity);
+        velocity = Vector2Scale(Vector2Normalize(velocity), length - deceleration_factor);
+    }
 }
 
 
@@ -131,8 +112,6 @@ void Player::kick(Ball &ball)
     }
     else
         ball.roll(kick_direction, 1);
-
-    return;
 }
 
 

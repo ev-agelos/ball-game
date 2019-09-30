@@ -20,6 +20,8 @@ const int POWERBAR_BOTTOM_OFFSET = 15;
 extern const int GOALPOST_THICKNESS = 10;
 extern const float GOALPOST_HEIGHT_START = SCREENHEIGHT / 2 - 50;
 extern const float GOALPOST_HEIGHT_END = SCREENHEIGHT / 2 + 50;
+extern int LEFT_SCORE = 0;
+extern int RIGHT_SCORE = 0;
 bool DEBUG = false;
 bool PAUSE = false;
 int FPS_COUNTER = 0;
@@ -96,7 +98,7 @@ void draw(Player & p, Bot & bot, Ball & ball)
     ClearBackground(BLACK);
 
     // Score
-    DrawText(FormatText("Score: %01i - %01i", ball.left_score, ball.right_score), SCREENWIDTH/2 - 60, SCREENHEIGHT - 18, 19, RED);
+    DrawText(FormatText("Score: %01i - %01i", LEFT_SCORE, RIGHT_SCORE), SCREENWIDTH/2 - 60, SCREENHEIGHT - 18, 19, RED);
 
     // players and ball
     DrawRectangleRec(p.rec, GREEN);

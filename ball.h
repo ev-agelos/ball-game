@@ -21,8 +21,6 @@ public:
     Vector2 velocity;
     Player *controlled_by;
     bool crossed_net;
-    int left_score;
-    int right_score;
     Sound kick_sound;
     void setup();
     void roll(const Vector2 &kick_direction, float power);

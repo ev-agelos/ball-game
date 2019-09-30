@@ -14,6 +14,9 @@ extern const int RIGHT_BOUND;
 extern const int GOALPOST_THICKNESS;
 extern const float GOALPOST_HEIGHT_START;
 extern const float GOALPOST_HEIGHT_END;
+extern int LEFT_SCORE;
+extern int RIGHT_SCORE;
+
 
 Ball::Ball(Sound sound)
     :
@@ -26,8 +29,6 @@ Ball::Ball(Sound sound)
     velocity{0, 0},
     controlled_by(nullptr),
     crossed_net(false),
-    left_score(0),
-    right_score(0),
     kick_sound(sound)
 {
 }
@@ -37,8 +38,7 @@ void Ball::setup()
 {
     position.x = ((RIGHT_BOUND - LEFT_BOUND) / 2.f) + LEFT_BOUND;
     position.y = ((BOTTOM_BOUND - TOP_BOUND) / 2.f) + TOP_BOUND;
-    velocity.x = 0;
-    velocity.y = 0;
+    velocity = {0, 0};
     crossed_net = false;
     controlled_by = nullptr;
 }
@@ -64,12 +64,12 @@ void Ball::set_x(float val)
         {
             if (position.x < LEFT_BOUND)
             {
-                right_score += 1;
+                RIGHT_SCORE += 1;
                 crossed_net = true;
             }
             else if (position.x > RIGHT_BOUND)
             {
-                left_score += 1;
+                LEFT_SCORE += 1;
                 crossed_net = true;
             }
         }
@@ -95,43 +95,9 @@ void Ball::set_y(float val)
 
 void Ball::apply_acceleration()
 {
-    if (abs(acceleration.x) > acceleration_factor)
-    {
-        if (acceleration.x > 0)
-        {
-            velocity.x += acceleration_factor;
-            acceleration.x -= acceleration_factor;
-        }
-        else if (acceleration.x < 0)
-        {
-            velocity.x -= acceleration_factor;
-            acceleration.x += acceleration_factor;
-        }
-    }
-    else
-    {
-        velocity.x += acceleration.x;
-        acceleration.x = 0;
-    }
-
-    if (abs(acceleration.y) > acceleration_factor)
-    {
-        if (acceleration.y > 0)
-        {
-            velocity.y += acceleration_factor;
-            acceleration.y -= acceleration_factor;
-        }
-        else if (acceleration.y < 0)
-        {
-            velocity.y -= acceleration_factor;
-            acceleration.y += acceleration_factor;
-        }
-    }
-    else
-    {
-        velocity.y += acceleration.y;
-        acceleration.y = 0;
-    }
+    limit_vector(acceleration, acceleration_factor);
+    velocity = Vector2Add(velocity, acceleration);
+    acceleration = {0, 0};
 }
 
 
@@ -143,10 +109,8 @@ void Ball::apply_friction()
     Vector2 norm_velocity = Vector2Normalize(velocity);
     friction = Vector2Scale(norm_velocity, friction_c * -1);
 
-    if (abs(friction.x) >= abs(velocity.x))
-        velocity.x = friction.x = 0;
-    if (abs(friction.y) >= abs(velocity.y))
-        velocity.y = friction.y = 0;
+    if (Vector2Length(friction) > Vector2Length(velocity))
+        velocity = friction = Vector2Zero();
 
     velocity = Vector2Add(velocity, friction);
 }

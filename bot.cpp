@@ -19,8 +19,7 @@ void Bot::setup()
 {
     rec.x = GetRandomValue(((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND, RIGHT_BOUND - rec.width);
     rec.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND - rec.height);
-    velocity.x = 0;
-    velocity.y = 0;
+    velocity = {0, 0};
     power = 0;
 }
 
