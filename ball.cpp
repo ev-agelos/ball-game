@@ -148,10 +148,8 @@ void Ball::check_collision(Player & p, Bot & bot)
     if (CheckCollisionCircleRec(position, radius, p.rec))
     {
         
-        if (velocity.x > p.max_speed)
-            velocity.x *= -1;
-        else if (velocity.y > p.max_speed)
-            velocity.y *= -1;
+        if (abs(velocity.x) > p.max_speed or abs(velocity.y) > p.max_speed)
+            velocity = Vector2Negate(velocity);
         else
         {
             controlled_by = &p;

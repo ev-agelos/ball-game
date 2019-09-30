@@ -133,10 +133,14 @@ void Player::handle_movement_control(Ball & ball)
         velocity = get_constrained_velocity(ball, velocity);
         rec.x = last_position.x;
         rec.y = last_position.y;
-        if (velocity.x != last_velocity.x or velocity.y != last_velocity.y)
+        // avoid moving backwards because ball is approaching towards player
+        if (Vector2DotProduct(Vector2Normalize(velocity), Vector2Normalize(last_velocity)) == 1)
         {
-            kick(ball);
-            ball.controlled_by = this;
+            if (velocity.x != last_velocity.x or velocity.y != last_velocity.y)
+            {
+                kick(ball);
+                ball.controlled_by = this;
+            }
         }
     }
     else if (!input.x and !input.y)
