@@ -33,8 +33,8 @@ Player::Player()
 
 void Player::setup()
 {
-    rec.x = GetRandomValue(LEFT_BOUND + rec.width / 2, ((RIGHT_BOUND - LEFT_BOUND - rec.width / 2) / 2) + LEFT_BOUND);
-    rec.y = GetRandomValue(TOP_BOUND + rec.height / 2, BOTTOM_BOUND - rec.height / 2);
+    rec.x = GetRandomValue(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND - rec.width) / 2) + LEFT_BOUND);
+    rec.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND - rec.height);
     velocity = {0, 0};
     power = 0;
 }
