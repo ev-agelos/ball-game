@@ -30,5 +30,7 @@ public:
     virtual void setup();
     void update(Ball & ball);
     bool is_velocity_constrained(Ball &ball, Vector2 new_velocity);
+    void handle_collision_response(Ball &ball, Vector2 travelled);
     void kick(Ball &ball);
+    Vector2 last_position;
 };

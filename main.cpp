@@ -27,6 +27,7 @@ bool PAUSE = false;
 int FPS_COUNTER = 0;
 
 void draw(Player &p, Bot &bot, Ball &ball);
+void check_collisions(Ball &ball, Player &p, Bot &bot);
 
 
 void reset(Player &p, Bot &bot, Ball &ball)
@@ -65,12 +66,13 @@ int main()
         {
             if (!IsSoundPlaying(crowd_sound))
                 PlaySound(crowd_sound);
+
             p1.update(ball);
             bot.update(ball, p1);
-    
             ball.update();
-            ball.check_collision(p1, bot);
-    
+
+            check_collisions(ball, p1, bot);
+
             if (ball.crossed_net)
             {
                 PlaySound(crowd_goal_sound);
@@ -137,14 +139,67 @@ void draw(Player & p, Bot & bot, Ball & ball)
     if (PAUSE && ((FPS_COUNTER / 30) % 2))
         DrawText("PAUSED", 350, 200, 30, GRAY);
 
-    // Forces for debugging purposes        
+    // Forces for debugging purposes
     if (DEBUG)
     {
         DrawCircle(p.rec.x + p.rec.width / 2, p.rec.y + p.rec.height / 2, 2, RED);
         DrawCircle(ball.position.x, ball.position.y, 2, RED);
         float mag = Vector2Length(ball.velocity) * 2;
         DrawLineV(ball.position, {ball.position.x + (mag * ball.velocity.x), ball.position.y + (mag * ball.velocity.y)}, RED);
-    } 
+    }
 
     EndDrawing();
+}
+
+
+float get_penetration_distance(Rectangle rec, Vector2 ball_pos, float ball_radius)
+{
+    float nearest_x = Clamp(ball_pos.x, rec.x, rec.x + rec.width);
+    float nearest_y = Clamp(ball_pos.y, rec.y, rec.y + rec.height);
+    float distance = Vector2Length({ball_pos.x - nearest_x, ball_pos.y - nearest_y});
+    return ball_radius - distance;
+}
+
+
+void check_collisions(Ball &ball, Player &p, Bot &bot)
+{
+    // TODO optimization, references &
+    Rectangle p_rec = {p.last_position.x, p.last_position.y, p.rec.width, p.rec.height};
+    Vector2 p_direction = Vector2Normalize(p.velocity);
+
+    Vector2 ball_pos = ball.last_position;
+    Vector2 ball_direction;
+    if (ball.velocity.x or ball.velocity.y)
+        ball_direction = Vector2Normalize(ball.velocity);
+    else
+        ball_direction = Vector2Zero();
+
+    Vector2 p_velocity = Vector2Zero(), ball_velocity = Vector2Zero();
+
+    while (Vector2Length(p_velocity) < Vector2Length(p.velocity) or Vector2Length(ball_velocity) < Vector2Length(ball.velocity))
+    {
+        p_velocity = Vector2Add(p_velocity, p_direction);
+        if (Vector2Length(p_velocity) > Vector2Length(p.velocity))
+            p_velocity = p.velocity;
+        ball_velocity = Vector2Add(ball_velocity, ball_direction);
+        if (Vector2Length(ball_velocity) > Vector2Length(ball.velocity))
+            ball_velocity = ball.velocity;
+
+        p_rec.x = p.last_position.x + p_velocity.x;
+        p_rec.y = p.last_position.y + p_velocity.y;
+        ball_pos = Vector2Add(ball.last_position, ball_velocity);
+
+        if (CheckCollisionCircleRec(ball_pos, ball.radius, p_rec))
+        {
+            float penetration_distance = get_penetration_distance(p_rec, ball_pos, ball.radius);
+            if (abs(penetration_distance) < 1)  // make sure have distance radius + 1 cause raylib casts to int
+                penetration_distance = 1;
+            Vector2 penetration = Vector2Scale(p_direction, abs(penetration_distance));
+
+            Vector2 velocity = Vector2Subtract(p_velocity, penetration);
+            p.handle_collision_response(ball, velocity);
+            ball.handle_collision_response(p, ball_velocity);
+            return;
+        }
+    }
 }

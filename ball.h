@@ -25,7 +25,8 @@ public:
     void roll(const Vector2 &kick_direction, float power);
     void kick(const Vector2 &kick_direction, float power);
     void update();
-    void check_collision(Player & p, Bot & bot);
     void apply_acceleration();
     void apply_friction();
+    void handle_collision_response(Player &p, Vector2 velocity);
+    Vector2 last_position;
 };

@@ -45,6 +45,8 @@ void Ball::setup()
 
 void Ball::set_x(float val)
 {
+    last_position.x = position.x;
+
     // ball is in limits
     if (((val - radius) > LEFT_BOUND) && ((val + radius) < RIGHT_BOUND))
     {
@@ -78,6 +80,8 @@ void Ball::set_x(float val)
 
 void Ball::set_y(float val)
 {
+    last_position.y = position.y;
+
     // ball is in limits
     if (((val - radius) > TOP_BOUND) && ((val + radius) < BOTTOM_BOUND))
     {
@@ -136,21 +140,15 @@ void Ball::kick(const Vector2 &kick_direction, float power)
 }
 
 
-void Ball::check_collision(Player &p, Bot &bot)
+void Ball::handle_collision_response(Player &p, Vector2 velocity)
 {
-    if (controlled_by != nullptr)
-        return;
+    position = last_position;
+    this->velocity = velocity;
+    set_x(position.x + this->velocity.x);
+    set_y(position.y + this->velocity.y);
 
-    if (CheckCollisionCircleRec(position, radius, p.rec))
-    {
-        if (abs(velocity.x) > p.max_speed or abs(velocity.y) > p.max_speed)
-            velocity = Vector2Negate(velocity);
-        else
-        {
-            controlled_by = &p;
-            velocity = Vector2Zero();
-        }
-    }
-    else if (controlled_by != &bot && CheckCollisionCircleRec(position, radius, bot.rec))
-       controlled_by = &bot;
+    if (abs(this->velocity.x) > p.max_speed)
+        this->velocity.x *= -1;
+    if (abs(this->velocity.y) > p.max_speed)
+        this->velocity.y *= -1;
 }
