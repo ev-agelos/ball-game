@@ -1,20 +1,23 @@
-game.exe: main.o ball.o player.o bot.o utils.o
-	g++ -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP *.o -I. -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o game.exe
+game.exe: build_dir main.o ball.o player.o bot.o utils.o
+	g++ -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP -Isrc -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o build/game.exe build/*.o
 
-main.o: main.cpp
-	g++ -c -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP main.cpp -I. -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o main.o
+build_dir:
+	mkdir -p build
 
-ball.o: ball.cpp ball.h utils.h
-	g++ -c -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP ball.cpp -I. -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o ball.o
+main.o: src/main.cpp
+	g++ -c -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP -Isrc -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o build/main.o src/main.cpp
 
-player.o: player.cpp player.h utils.h
-	g++ -c -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP player.cpp -I. -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o player.o
+ball.o: src/ball.cpp src/ball.h src/utils.h
+	g++ -c -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP -Isrc -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o build/ball.o src/ball.cpp
 
-bot.o: bot.cpp bot.h
-	g++ -c -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP bot.cpp -I. -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o bot.o
+player.o: src/player.cpp src/player.h src/utils.h
+	g++ -c -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP -Isrc -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o build/player.o src/player.cpp
 
-utils.o: utils.cpp utils.h
-	g++ -c -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP utils.cpp -I. -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o utils.o
+bot.o: src/bot.cpp src/bot.h
+	g++ -c -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP -Isrc -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o build/bot.o src/bot.cpp
+
+utils.o: src/utils.cpp src/utils.h
+	g++ -c -g -std=c++17 -Wall -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP -Isrc -I$INCLUDE_PATH -L$LIB_PATH -lraylib -o build/utils.o src/utils.cpp
 
 clean:
-	rm *.o game.exe
+	rm -rf build

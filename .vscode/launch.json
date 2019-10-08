@@ -5,7 +5,7 @@
             "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/game.exe",
+            "program": "${workspaceFolder}/build/game.exe",
             "externalConsole": false,
             "args": ["-fThreading"],
             "stopAtEntry": false,
@@ -37,7 +37,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "program": "${workspaceFolder}/game.exe",
+            "program": "${workspaceFolder}/build/game.exe",
             "windows": {
                 "miDebuggerPath": "F:/Mingw/mingw64/bin/gdb.exe"
             },
