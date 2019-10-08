@@ -129,9 +129,8 @@ void Player::handle_movement_control(Ball & ball)
         set_velocity();
     else if (!input.x and !input.y)
     {
-        float nearest_x = Clamp(ball.position.x, rec.x, rec.x + rec.width);
-        float nearest_y = Clamp(ball.position.y, rec.y, rec.y + rec.height);
-        float distance = Vector2Length({ball.position.x - nearest_x, ball.position.y - nearest_y}) - ball.radius - 1;  // -1 so they don't collide
+        Vector2 nearest = get_nearest_rec_point(ball.position, rec);
+        float distance = Vector2Distance(ball.position, nearest) - ball.radius - 1;  // -1 so they don't collide
         if (distance < APPROACH_RADIUS)
         {
             float speed = distance / APPROACH_RADIUS * max_speed;
@@ -194,6 +193,7 @@ void Player::handle_collision_response(Ball &ball, Vector2 velocity)
     this->velocity = velocity;
     update_pos(this->velocity);
 
+    // prevent getting control of the ball if it is moving too fast
     if ((abs(ball.velocity.x) <= max_speed and abs(this->velocity.y) <= max_speed) and (input.x or input.y))
     {
         kick(ball);

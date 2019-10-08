@@ -147,8 +147,6 @@ void Ball::handle_collision_response(Player &p, Vector2 velocity)
     set_x(position.x + this->velocity.x);
     set_y(position.y + this->velocity.y);
 
-    if (abs(this->velocity.x) > p.max_speed)
-        this->velocity.x *= -1;
-    if (abs(this->velocity.y) > p.max_speed)
-        this->velocity.y *= -1;
+    if (abs(this->velocity.x) > p.max_speed or abs(this->velocity.y) > p.max_speed)
+        this->velocity = Vector2Negate(this->velocity);
 }

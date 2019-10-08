@@ -11,3 +11,11 @@ void limit_vector(Vector2 &v, float limit)
         v.y = norm_vector.y * limit;
     }
 }
+
+
+Vector2 get_nearest_rec_point(Vector2 pos, Rectangle rec)
+{
+    float nearest_x = Clamp(pos.x, rec.x, rec.x + rec.width);
+    float nearest_y = Clamp(pos.y, rec.y, rec.y + rec.height);
+    return (Vector2){nearest_x, nearest_y};
+}

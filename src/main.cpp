@@ -152,11 +152,10 @@ void draw(Player & p, Bot & bot, Ball & ball)
 }
 
 
-float get_penetration_distance(Rectangle rec, Vector2 ball_pos, float ball_radius)
+float get_penetration_distance(Rectangle &rec, Vector2 &ball_pos, float &ball_radius)
 {
-    float nearest_x = Clamp(ball_pos.x, rec.x, rec.x + rec.width);
-    float nearest_y = Clamp(ball_pos.y, rec.y, rec.y + rec.height);
-    float distance = Vector2Length({ball_pos.x - nearest_x, ball_pos.y - nearest_y});
+    Vector2 nearest = get_nearest_rec_point(ball_pos, rec);
+    float distance = Vector2Distance(ball_pos, nearest);
     return ball_radius - distance;
 }
 
@@ -168,11 +167,9 @@ void check_collisions(Ball &ball, Player &p, Bot &bot)
     Vector2 p_direction = Vector2Normalize(p.velocity);
 
     Vector2 ball_pos = ball.last_position;
-    Vector2 ball_direction;
+    Vector2 ball_direction = Vector2Zero();
     if (ball.velocity.x or ball.velocity.y)
         ball_direction = Vector2Normalize(ball.velocity);
-    else
-        ball_direction = Vector2Zero();
 
     Vector2 p_velocity = Vector2Zero(), ball_velocity = Vector2Zero();
 
@@ -192,12 +189,12 @@ void check_collisions(Ball &ball, Player &p, Bot &bot)
         if (CheckCollisionCircleRec(ball_pos, ball.radius, p_rec))
         {
             float penetration_distance = get_penetration_distance(p_rec, ball_pos, ball.radius);
-            if (abs(penetration_distance) < 1)  // make sure have distance radius + 1 cause raylib casts to int
+            // make sure distance >= radius + 1 cause raylib casts to int
+            if (abs(penetration_distance) < 1)
                 penetration_distance = 1;
-            Vector2 penetration = Vector2Scale(p_direction, abs(penetration_distance));
-
-            Vector2 velocity = Vector2Subtract(p_velocity, penetration);
-            p.handle_collision_response(ball, velocity);
+            Vector2 velocity = Vector2Scale(p_direction, abs(penetration_distance));
+            p_velocity = Vector2Subtract(p_velocity, velocity);
+            p.handle_collision_response(ball, p_velocity);
             ball.handle_collision_response(p, ball_velocity);
             return;
         }
