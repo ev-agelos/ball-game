@@ -122,6 +122,7 @@ void Ball::update()
     apply_friction();
     set_x(position.x + velocity.x);
     set_y(position.y + velocity.y);
+    velocity = Vector2Scale(velocity, 0.99);
 }
 
 
