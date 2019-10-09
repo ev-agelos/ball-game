@@ -120,14 +120,7 @@ void Player::kick(Ball &ball)
 
 void Player::handle_movement_control(Ball & ball)
 {
-    if (!CheckCollisionCircleRec(ball.position, ball.radius, rec))
-        ball_inside_rectangle = false;
-
-    apply_acceleration();
-
-    if (ball.controlled_by != this)
-        set_velocity();
-    else if (!input.x and !input.y)
+    if (!input.x and !input.y)
     {
         Vector2 nearest = get_nearest_rec_point(ball.position, rec);
         float distance = Vector2Distance(ball.position, nearest) - ball.radius - 1;  // -1 so they don't collide
@@ -139,7 +132,6 @@ void Player::handle_movement_control(Ball & ball)
             Vector2 desired_velocity = Vector2Scale(desired_dir, speed);
             acceleration = Vector2Subtract(desired_velocity, velocity);
         }
-        set_velocity();
     }
     else
     {
@@ -149,17 +141,20 @@ void Player::handle_movement_control(Ball & ball)
         Vector2 desired_velocity = Vector2Scale(desired_dir, max_speed);
         acceleration = Vector2Subtract(desired_velocity, velocity);
         limit_vector(acceleration, acceleration_factor);
-        set_velocity();
     }
-    update_pos(velocity);
 }
 
 
 void Player::update(Ball & ball)
 {
     read_user_input();
-    handle_movement_control(ball);
-
+    if (!CheckCollisionCircleRec(ball.position, ball.radius, rec))
+        ball_inside_rectangle = false;
+    apply_acceleration();
+    if (ball.controlled_by == this)
+        handle_movement_control(ball);
+    set_velocity();
+    update_pos(velocity);
     if (IsKeyDown(KEY_D) && power < 100)
         power += 1;
 }
