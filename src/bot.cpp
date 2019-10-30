@@ -24,6 +24,6 @@ void Bot::setup()
 }
 
 
-void Bot::update(Ball &ball, Player &p)
+void Bot::update(float dt, Ball &ball, Player &p)
 {
 }

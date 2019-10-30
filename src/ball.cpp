@@ -20,7 +20,7 @@ extern int RIGHT_SCORE;
 
 Ball::Ball(Sound sound)
     :
-    friction_c(0.02),
+    friction_c(0.3f),
     radius(5.f),
     position{0, 0},
     acceleration{0, 0},
@@ -46,7 +46,6 @@ void Ball::setup()
 void Ball::set_x(float val)
 {
     last_position.x = position.x;
-
     // ball is in limits
     if (((val - radius) > LEFT_BOUND) && ((val + radius) < RIGHT_BOUND))
     {
@@ -94,35 +93,24 @@ void Ball::set_y(float val)
 }
 
 
-void Ball::apply_acceleration()
+void Ball::update(float dt)
 {
-    velocity = Vector2Add(velocity, acceleration);
-    acceleration = {0, 0};
-}
+    if (acceleration.x or acceleration.y)
+    {
+        velocity = Vector2Add(velocity, acceleration);
+        acceleration = {0, 0};
+    }
+    else
+    {
+        velocity = Vector2Scale(velocity, std::pow(friction_c, dt));
+        if (abs(velocity.x) < 0.1)
+            velocity.x = 0;
+        if (abs(velocity.y) < 0.1)
+            velocity.y = 0;
+    }
 
-
-void Ball::apply_friction()
-{
-    if (!velocity.x and !velocity.y)
-        return;
-
-    Vector2 norm_velocity = Vector2Normalize(velocity);
-    friction = Vector2Scale(norm_velocity, friction_c * -1);
-
-    if (Vector2Length(friction) > Vector2Length(velocity))
-        velocity = friction = Vector2Zero();
-
-    velocity = Vector2Add(velocity, friction);
-}
-
-
-void Ball::update()
-{
-    apply_acceleration();
-    apply_friction();
-    set_x(position.x + velocity.x);
-    set_y(position.y + velocity.y);
-    velocity = Vector2Scale(velocity, 0.99);
+    set_x(position.x + velocity.x * dt);
+    set_y(position.y + velocity.y * dt);
 }
 
 
@@ -141,12 +129,12 @@ void Ball::kick(const Vector2 &kick_direction, float power)
 }
 
 
-void Ball::handle_collision_response(Player &p, Vector2 velocity)
+void Ball::handle_collision_response(Player &p, Vector2 velocity, float dt)
 {
     position = last_position;
     this->velocity = velocity;
-    set_x(position.x + this->velocity.x);
-    set_y(position.y + this->velocity.y);
+    set_x(position.x + this->velocity.x * dt);
+    set_y(position.y + this->velocity.y * dt);
 
     if (abs(this->velocity.x) > p.max_speed or abs(this->velocity.y) > p.max_speed)
         this->velocity = Vector2Negate(this->velocity);

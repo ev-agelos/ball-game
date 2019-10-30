@@ -18,11 +18,10 @@ const int APPROACH_RADIUS = 30;
 
 Player::Player()
     :
-    ball_inside_rectangle(false),
     acceleration{0, 0},
-    acceleration_factor(0.1),
-    deceleration_factor(0.05),
-    max_speed(2.f),
+    acceleration_factor(100.f),
+    deceleration_factor(0.1f),
+    max_speed(100.f),
     rec{0, 0, 20, 20},
     input{0, 0},
     velocity{0, 0},
@@ -77,12 +76,12 @@ void Player::read_user_input()
 }
 
 
-void Player::apply_acceleration()
+void Player::apply_acceleration(float dt)
 {
     if (input.x or input.y)
     {
         Vector2 norm_input = Vector2Normalize(input);
-        acceleration = Vector2Scale(norm_input, acceleration_factor);
+        acceleration = Vector2Scale(norm_input, acceleration_factor * dt);
     }
     else
         acceleration = {0, 0};
@@ -91,16 +90,10 @@ void Player::apply_acceleration()
 
 void Player::set_velocity()
 {
-    velocity = Vector2Add(velocity, acceleration);
-    if (!velocity.x and !velocity.y)
-        return;
-
-    limit_vector(velocity, max_speed);
-
-    if (!acceleration.x and !acceleration.y)
+    if (acceleration.x or acceleration.y)
     {
-        float length = Vector2Length(velocity);
-        velocity = Vector2Scale(Vector2Normalize(velocity), length - deceleration_factor);
+        velocity = Vector2Add(velocity, acceleration);
+        limit_vector(velocity, max_speed);
     }
 }
 
@@ -114,11 +107,11 @@ void Player::kick(Ball &ball)
         power = 0;
     }
     else
-        ball.roll(kick_direction, 1);
+        ball.roll(kick_direction, 150);
 }
 
 
-void Player::handle_movement_control(Ball & ball)
+void Player::handle_movement_control(float dt, Ball & ball)
 {
     if (!input.x and !input.y)
     {
@@ -129,7 +122,7 @@ void Player::handle_movement_control(Ball & ball)
             float speed = distance / APPROACH_RADIUS * max_speed;
             Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
             Vector2 desired_dir = Vector2Normalize(Vector2Subtract(ball.position, rec_center));
-            Vector2 desired_velocity = Vector2Scale(desired_dir, speed);
+            Vector2 desired_velocity = Vector2Scale(desired_dir, speed * dt);
             acceleration = Vector2Subtract(desired_velocity, velocity);
         }
     }
@@ -140,21 +133,31 @@ void Player::handle_movement_control(Ball & ball)
         Vector2 desired_dir = Vector2Normalize(diff);
         Vector2 desired_velocity = Vector2Scale(desired_dir, max_speed);
         acceleration = Vector2Subtract(desired_velocity, velocity);
-        limit_vector(acceleration, acceleration_factor);
     }
+    acceleration = Vector2Scale(acceleration, dt);
 }
 
 
-void Player::update(Ball & ball)
+void Player::update(float dt, Ball & ball)
 {
     read_user_input();
-    if (!CheckCollisionCircleRec(ball.position, ball.radius, rec))
-        ball_inside_rectangle = false;
-    apply_acceleration();
+
     if (ball.controlled_by == this)
-        handle_movement_control(ball);
-    set_velocity();
-    update_pos(velocity);
+    {
+        handle_movement_control(dt, ball);
+        limit_vector(acceleration, acceleration_factor);
+    }
+    else
+        apply_acceleration(dt);
+
+    // change in velocity
+    if (acceleration.x or acceleration.y)
+        set_velocity();
+    else if (velocity.x or velocity.y)
+        velocity = Vector2Scale(velocity, std::pow(deceleration_factor, dt));
+
+    update_pos(Vector2Scale(velocity, dt));
+
     if (IsKeyDown(KEY_D) && power < 100)
         power += 1;
 }
@@ -172,12 +175,9 @@ const Vector2 Player::get_kick_direction(const Vector2 &ball_pos) const
 }
 
 
-void Player::handle_collision_response(Ball &ball, Vector2 velocity)
+void Player::handle_collision_response(Ball &ball, Vector2 velocity, float dt)
 {
     if (Vector2DotProduct(Vector2Normalize(input), Vector2Normalize(this->velocity)) < -0.99)
-        ball_inside_rectangle = true;
-
-    if (ball_inside_rectangle)
     {
         acceleration = Vector2Negate(acceleration);
         set_velocity();
@@ -186,7 +186,7 @@ void Player::handle_collision_response(Ball &ball, Vector2 velocity)
     rec.x = last_position.x;
     rec.y = last_position.y;
     this->velocity = velocity;
-    update_pos(this->velocity);
+    update_pos(Vector2Scale(this->velocity, dt));
 
     // prevent getting control of the ball if it is moving too fast
     if ((abs(ball.velocity.x) <= max_speed and abs(this->velocity.y) <= max_speed) and (input.x or input.y))

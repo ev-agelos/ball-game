@@ -8,6 +8,6 @@ class Bot : public Player
 {
 public:
     Bot();
-    void update(Ball & ball, Player &p);
+    void update(float dt, Ball & ball, Player &p);
     void setup();
 };

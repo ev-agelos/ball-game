@@ -27,7 +27,7 @@ bool PAUSE = false;
 int FPS_COUNTER = 0;
 
 void draw(Player &p, Bot &bot, Ball &ball);
-void check_collisions(Ball &ball, Player &p, Bot &bot);
+void check_collisions(float dt, Ball &ball, Player &p, Bot &bot);
 
 
 void reset(Player &p, Bot &bot, Ball &ball)
@@ -66,23 +66,23 @@ int main()
         {
             if (!IsSoundPlaying(crowd_sound))
                 PlaySound(crowd_sound);
+            float dt = GetFrameTime();
+            p1.update(dt, ball);
+            bot.update(dt, ball, p1);
+            ball.update(dt);
 
-            p1.update(ball);
-            bot.update(ball, p1);
-            ball.update();
-
-            check_collisions(ball, p1, bot);
-
-            if (ball.crossed_net)
-            {
-                PlaySound(crowd_goal_sound);
-                reset(p1, bot, ball);
-            }
+            check_collisions(dt, ball, p1, bot);
         }
         else
             FPS_COUNTER++;
 
         draw(p1, bot, ball);
+
+        if (ball.crossed_net)
+        {
+            PlaySound(crowd_goal_sound);
+            reset(p1, bot, ball);
+        }
     }
 
     UnloadSound(crowd_sound);
@@ -160,42 +160,38 @@ float get_penetration_distance(Rectangle &rec, Vector2 &ball_pos, float &ball_ra
 }
 
 
-void check_collisions(Ball &ball, Player &p, Bot &bot)
+void check_collisions(float dt, Ball &ball, Player &p, Bot &bot)
 {
-    // TODO optimization, references &
+    int steps = 10;
     Rectangle p_rec = {p.last_position.x, p.last_position.y, p.rec.width, p.rec.height};
-    Vector2 p_direction = Vector2Normalize(p.velocity);
+    Vector2 p_velocity_step = Vector2Divide(Vector2Scale(p.velocity, dt), steps);
 
     Vector2 ball_pos = ball.last_position;
-    Vector2 ball_direction = Vector2Zero();
-    if (ball.velocity.x or ball.velocity.y)
-        ball_direction = Vector2Normalize(ball.velocity);
+    Vector2 ball_velocity_step = Vector2Divide(Vector2Scale(ball.velocity, dt), steps);
 
-    Vector2 p_velocity = Vector2Zero(), ball_velocity = Vector2Zero();
-
-    while (Vector2Length(p_velocity) < Vector2Length(p.velocity) or Vector2Length(ball_velocity) < Vector2Length(ball.velocity))
+    for (int counter=1; counter<=steps; counter++)
     {
-        p_velocity = Vector2Add(p_velocity, p_direction);
-        if (Vector2Length(p_velocity) > Vector2Length(p.velocity))
-            p_velocity = p.velocity;
-        ball_velocity = Vector2Add(ball_velocity, ball_direction);
-        if (Vector2Length(ball_velocity) > Vector2Length(ball.velocity))
-            ball_velocity = ball.velocity;
-
-        p_rec.x = p.last_position.x + p_velocity.x;
-        p_rec.y = p.last_position.y + p_velocity.y;
-        ball_pos = Vector2Add(ball.last_position, ball_velocity);
+        p_rec.x += p_velocity_step.x;
+        p_rec.y += p_velocity_step.y;
+        ball_pos = Vector2Add(ball_pos, ball_velocity_step);
 
         if (CheckCollisionCircleRec(ball_pos, ball.radius, p_rec))
         {
             float penetration_distance = get_penetration_distance(p_rec, ball_pos, ball.radius);
-            // make sure distance >= radius + 1 cause raylib casts to int
-            if (abs(penetration_distance) < 1)
-                penetration_distance = 1;
-            Vector2 velocity = Vector2Scale(p_direction, abs(penetration_distance));
-            p_velocity = Vector2Subtract(p_velocity, velocity);
-            p.handle_collision_response(ball, p_velocity);
-            ball.handle_collision_response(p, ball_velocity);
+            if (penetration_distance < 0)
+                continue;
+
+            float total_dt = counter * dt / steps;
+
+            float total_length = Vector2Length(Vector2Scale(p_velocity_step, counter));
+            float length = total_length - penetration_distance;
+            float time = length * total_dt / total_length;
+            Vector2 p_velocity = Vector2Scale(Vector2Normalize(p.velocity), length / time);
+
+            Vector2 ball_velocity = Vector2Scale(ball_velocity_step, counter);
+
+            p.handle_collision_response(ball, p_velocity, time);
+            ball.handle_collision_response(p, Vector2Divide(ball_velocity, total_dt), total_dt);
             return;
         }
     }
