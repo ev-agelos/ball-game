@@ -74,16 +74,16 @@ void Player::read_user_input()
         input.y = 1;
     else
         input.y = 0;
+
+    if (input.x or input.y)
+        input = Vector2Normalize(input);
 }
 
 
 void Player::apply_acceleration(float dt)
 {
     if (input.x or input.y)
-    {
-        Vector2 norm_input = Vector2Normalize(input);
-        acceleration = Vector2Scale(norm_input, acceleration_factor * dt);
-    }
+        acceleration = Vector2Scale(input, acceleration_factor * dt);
     else
         acceleration = {0, 0};
 }
@@ -167,7 +167,7 @@ void Player::update(float dt, Ball & ball)
 const Vector2 Player::get_kick_direction(const Vector2 &ball_pos) const
 {
     if (input.x || input.y)
-        return Vector2Normalize(input);
+        return input;
     else
     {
         Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
@@ -178,7 +178,7 @@ const Vector2 Player::get_kick_direction(const Vector2 &ball_pos) const
 
 void Player::handle_collision_response(Ball &ball, Vector2 velocity, float dt)
 {
-    if (Vector2DotProduct(Vector2Normalize(input), Vector2Normalize(this->velocity)) < -0.99)
+    if (Vector2DotProduct(input, Vector2Normalize(this->velocity)) < -0.99)
     {
         acceleration = Vector2Negate(acceleration);
         set_velocity();
