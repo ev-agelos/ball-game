@@ -7,24 +7,26 @@
 #include "ball.h"
 #include "utils.h"
 
-const int SCREENWIDTH = 800;
-const int SCREENHEIGHT = 450;
+static bool DEBUG = false;
+static bool PAUSE = false;
+static int FPS_COUNTER = 0;
+static const int SCREENWIDTH = 800;
+static const int SCREENHEIGHT = 450;
+static const int POWERBAR_WIDTH = 100;
+static const int POWERBAR_HEIGHT = 12;
+static const int POWERBAR_LR_OFFSET = 50;
+static const int POWERBAR_BOTTOM_OFFSET = 15;
+
 extern const int TOP_BOUND = 20;
 extern const int BOTTOM_BOUND = SCREENHEIGHT - TOP_BOUND;
 extern const int LEFT_BOUND = 20;
 extern const int RIGHT_BOUND = SCREENWIDTH - LEFT_BOUND;
-const int POWERBAR_WIDTH = 100;
-const int POWERBAR_HEIGHT = 12;
-const int POWERBAR_LR_OFFSET = 50;
-const int POWERBAR_BOTTOM_OFFSET = 15;
 extern const int GOALPOST_THICKNESS = 10;
 extern const float GOALPOST_HEIGHT_START = SCREENHEIGHT / 2 - 50;
 extern const float GOALPOST_HEIGHT_END = SCREENHEIGHT / 2 + 50;
-extern int LEFT_SCORE = 0;
-extern int RIGHT_SCORE = 0;
-bool DEBUG = false;
-bool PAUSE = false;
-int FPS_COUNTER = 0;
+int LEFT_SCORE = 0;
+int RIGHT_SCORE = 0;
+
 
 void draw(Player &p, Bot &bot, Ball &ball);
 void check_collisions(float dt, Ball &ball, Player &p, Bot &bot);

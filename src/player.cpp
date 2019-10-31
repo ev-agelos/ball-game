@@ -13,7 +13,8 @@ extern const int TOP_BOUND;
 extern const int BOTTOM_BOUND;
 extern const int LEFT_BOUND;
 extern const int RIGHT_BOUND;
-const int APPROACH_RADIUS = 30;
+
+static const int APPROACH_RADIUS = 30;
 
 
 Player::Player()
