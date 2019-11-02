@@ -1,5 +1,3 @@
-#include <iostream>
-#include <math.h>
 #include <raylib.h>
 #include <raymath.h>
 #include "ball.h"
@@ -21,15 +19,15 @@ extern int RIGHT_SCORE;
 Ball::Ball(Sound sound)
     :
     friction_c(0.3f),
+    acceleration{0, 0},
     radius(5.f),
     position{0, 0},
-    acceleration{0, 0},
-    friction{0, 0},
     velocity{0, 0},
     controlled_by(nullptr),
     crossed_net(false),
     kick_sound(sound)
 {
+    setup();
 }
 
 
@@ -114,14 +112,14 @@ void Ball::update(float dt)
 }
 
 
-void Ball::roll(const Vector2 &kick_direction, float power)
+void Ball::roll(const Vector2& kick_direction, float power)
 {
     Vector2 kick_velocity = Vector2Scale(kick_direction, power);
     acceleration = Vector2Subtract(kick_velocity, velocity);
 }
 
 
-void Ball::kick(const Vector2 &kick_direction, float power)
+void Ball::kick(const Vector2& kick_direction, float power)
 {
     roll(kick_direction, power);
     controlled_by = nullptr;
@@ -129,7 +127,7 @@ void Ball::kick(const Vector2 &kick_direction, float power)
 }
 
 
-void Ball::handle_collision_response(Player &p, Vector2 velocity, float dt)
+void Ball::handle_collision_response(const Player& p, const Vector2& velocity, float dt)
 {
     position = last_position;
     this->velocity = velocity;

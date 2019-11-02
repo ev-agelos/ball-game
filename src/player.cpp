@@ -1,7 +1,3 @@
-#include <iostream>
-#include <algorithm>
-#include <time.h>
-#include <math.h>
 #include <raylib.h>
 #include <raymath.h>
 #include "player.h"
@@ -17,18 +13,19 @@ extern const int RIGHT_BOUND;
 static const int APPROACH_RADIUS = 30;
 
 
-Player::Player()
+Player::Player(const float max_speed)
     :
+    input{0, 0},
     acceleration{0, 0},
     acceleration_factor(100.f),
     deceleration_factor(0.1f),
-    max_speed(100.f),
+    max_speed(max_speed),
     rec{0, 0, 20, 20},
-    input{0, 0},
     velocity{0, 0},
     power(0),
     last_position{0, 0}
 {
+    setup();
 }
 
 
@@ -41,7 +38,7 @@ void Player::setup()
 }
 
 
-void Player::update_pos(const Vector2 &v)
+void Player::update_pos(const Vector2& v)
 {
     last_position = {rec.x, rec.y};
 
@@ -80,7 +77,7 @@ void Player::read_user_input()
 }
 
 
-void Player::apply_acceleration(float dt)
+void Player::apply_acceleration(float& dt)
 {
     if (input.x or input.y)
         acceleration = Vector2Scale(input, acceleration_factor * dt);
@@ -94,12 +91,12 @@ void Player::set_velocity()
     if (acceleration.x or acceleration.y)
     {
         velocity = Vector2Add(velocity, acceleration);
-        limit_vector(velocity, max_speed);
+        velocity = limit_vector(velocity, max_speed);
     }
 }
 
 
-void Player::kick(Ball &ball)
+void Player::kick(Ball& ball)
 {
     Vector2 kick_direction = get_kick_direction(ball.position);
     if (power && IsKeyUp(KEY_D))
@@ -112,7 +109,7 @@ void Player::kick(Ball &ball)
 }
 
 
-void Player::handle_movement_control(float dt, Ball & ball)
+void Player::handle_movement_control(float& dt, Ball& ball)
 {
     if (!input.x and !input.y)
     {
@@ -139,7 +136,7 @@ void Player::handle_movement_control(float dt, Ball & ball)
 }
 
 
-void Player::update(float dt, Ball & ball)
+void Player::update(float& dt, Ball& ball)
 {
     read_user_input();
 
@@ -159,24 +156,22 @@ void Player::update(float dt, Ball & ball)
 
     update_pos(Vector2Scale(velocity, dt));
 
-    if (IsKeyDown(KEY_D) && power < 100)
-        power += 1;
+    if (IsKeyDown(KEY_D) && power < max_power)
+        power += 100;
 }
 
 
-const Vector2 Player::get_kick_direction(const Vector2 &ball_pos) const
+const Vector2 Player::get_kick_direction(const Vector2& ball_pos) const
 {
     if (input.x || input.y)
         return input;
-    else
-    {
-        Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
-        return Vector2Normalize(Vector2Subtract(ball_pos, rec_center));
-    }
+
+    Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
+    return Vector2Normalize(Vector2Subtract(ball_pos, rec_center));
 }
 
 
-void Player::handle_collision_response(Ball &ball, Vector2 velocity, float dt)
+void Player::handle_collision_response(Ball& ball, const Vector2& velocity, float& dt)
 {
     if (Vector2DotProduct(input, Vector2Normalize(this->velocity)) < -0.99)
     {
