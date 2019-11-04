@@ -4,6 +4,7 @@
 #include "player.h"
 #include "bot.h"
 #include "utils.h"
+#include "sounds.h"
 
 extern const int TOP_BOUND;
 extern const int BOTTOM_BOUND;
@@ -16,7 +17,7 @@ extern int LEFT_SCORE;
 extern int RIGHT_SCORE;
 
 
-Ball::Ball(Sound sound)
+Ball::Ball()
     :
     friction_c(0.3f),
     acceleration{0, 0},
@@ -24,8 +25,7 @@ Ball::Ball(Sound sound)
     position{0, 0},
     velocity{0, 0},
     controlled_by(nullptr),
-    crossed_net(false),
-    kick_sound(sound)
+    crossed_net(false)
 {
     setup();
 }
@@ -123,7 +123,7 @@ void Ball::kick(const Vector2& kick_direction, float power)
 {
     roll(kick_direction, power);
     controlled_by = nullptr;
-    PlaySound(kick_sound);
+    play_ball_sound();
 }
 
 

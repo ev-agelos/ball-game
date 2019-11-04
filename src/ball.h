@@ -12,13 +12,12 @@ private:
     void set_x(float val);
     void set_y(float val);
 public:
-    Ball(Sound sound);
+    Ball();
     float radius;
     Vector2 position;
     Vector2 velocity;
     Player *controlled_by;
     bool crossed_net;
-    Sound kick_sound;
     Vector2 last_position;
     void setup();
     void roll(const Vector2& kick_direction, float power);
