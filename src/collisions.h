@@ -9,6 +9,9 @@
 #include "utils.h"
 
 
+static bool COLLISION = false;
+
+
 const float get_penetration_distance(const Rectangle& rec, const Vector2& ball_pos, const float& ball_radius)
 {
     Vector2 nearest = get_nearest_rec_point(ball_pos, rec);
@@ -38,6 +41,8 @@ void check_collisions(const float& dt, Ball& ball, Player& p, Bot& bot)
             if (penetration_distance < 0)
                 continue;
 
+            if (COLLISION)
+                return;
             float total_dt = counter * dt / steps;
 
             float total_length = Vector2Length(Vector2Scale(p_velocity_step, counter));
@@ -49,7 +54,9 @@ void check_collisions(const float& dt, Ball& ball, Player& p, Bot& bot)
 
             p.handle_collision_response(ball, p_velocity, time);
             ball.handle_collision_response(p, Vector2Divide(ball_velocity, total_dt), total_dt);
+            COLLISION = true;
             return;
         }
     }
+    COLLISION = false;
 }

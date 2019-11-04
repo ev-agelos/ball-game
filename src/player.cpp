@@ -178,6 +178,15 @@ void Player::handle_collision_response(Ball& ball, const Vector2& velocity, floa
         set_velocity();
         return;
     }
+
+    // ball will collide with player after the kick, so let player move freely
+    if (Vector2DotProduct(Vector2Normalize(this->velocity), input) < 0)
+    {
+        set_velocity();
+        kick(ball);
+        ball.controlled_by = this;
+        return;
+    }
     rec.x = last_position.x;
     rec.y = last_position.y;
     this->velocity = velocity;
