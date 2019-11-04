@@ -129,6 +129,8 @@ void Ball::kick(const Vector2& kick_direction, float power)
 
 void Ball::handle_collision_response(const Player& p, const Vector2& velocity, float dt)
 {
+    if (Vector2DotProduct(p.input, Vector2Normalize(p.velocity)) < -0.99)
+        return;
     position = last_position;
     this->velocity = velocity;
     set_x(position.x + this->velocity.x * dt);

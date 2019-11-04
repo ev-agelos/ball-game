@@ -4,7 +4,6 @@
 #include "ball.h"
 #include "utils.h"
 
-
 extern const int TOP_BOUND;
 extern const int BOTTOM_BOUND;
 extern const int LEFT_BOUND;
@@ -15,10 +14,10 @@ static const int APPROACH_RADIUS = 30;
 
 Player::Player(const float max_speed)
     :
-    input{0, 0},
     acceleration{0, 0},
     acceleration_factor(300.f),
     deceleration_factor(0.1f),
+    input{0, 0},
     max_speed(max_speed),
     rec{0, 0, 20, 20},
     velocity{0, 0},
