@@ -17,7 +17,7 @@ Player::Player(const float max_speed)
     :
     input{0, 0},
     acceleration{0, 0},
-    acceleration_factor(100.f),
+    acceleration_factor(300.f),
     deceleration_factor(0.1f),
     max_speed(max_speed),
     rec{0, 0, 20, 20},

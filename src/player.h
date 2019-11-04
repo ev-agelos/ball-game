@@ -20,7 +20,7 @@ private:
     void handle_movement_control(float& dt, Ball& ball);
     const Vector2 get_kick_direction(const Vector2& ball_pos) const;
 public:
-    Player(const float max_speed=100.f);
+    Player(const float max_speed=200.f);
     const float max_speed;
     Rectangle rec;
     Vector2 velocity;
