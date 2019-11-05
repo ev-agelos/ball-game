@@ -54,10 +54,10 @@ int main()
             play_crowd_sound();
             dt = GetFrameTime();
             p1.update(dt, ball);
-            bot.update(dt, ball, p1);
+            bot.update(dt, ball);
             ball.update(dt);
 
-            check_collisions(dt, ball, p1, bot);
+            check_collisions(dt, ball, p1);
         }
 
         draw(p1, bot, ball);

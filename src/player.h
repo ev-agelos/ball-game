@@ -11,7 +11,6 @@ private:
     Vector2 acceleration;
     const float acceleration_factor;
     const float deceleration_factor;
-    Color color;
     void update_pos(const Vector2& v);
     void read_user_input();
     void apply_acceleration(float& dt);

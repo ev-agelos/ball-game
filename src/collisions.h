@@ -12,7 +12,7 @@
 static bool COLLISION = false;
 
 
-const float get_penetration_distance(const Rectangle& rec, const Vector2& ball_pos, const float& ball_radius)
+float get_penetration_distance(const Rectangle& rec, const Vector2& ball_pos, const float& ball_radius)
 {
     Vector2 nearest = get_nearest_rec_point(ball_pos, rec);
     float distance = Vector2Distance(ball_pos, nearest);
@@ -20,7 +20,7 @@ const float get_penetration_distance(const Rectangle& rec, const Vector2& ball_p
 }
 
 
-void check_collisions(const float& dt, Ball& ball, Player& p, Bot& bot)
+void check_collisions(const float& dt, Ball& ball, Player& p)
 {
     int steps = 10;
     Rectangle p_rec = {p.last_position.x, p.last_position.y, p.rec.width, p.rec.height};
