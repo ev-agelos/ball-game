@@ -5,6 +5,7 @@
 #include "sounds.h"
 
 std::map<std::string, Sound> SOUNDS;
+Music BG_MUSIC;
 
 
 void load_sounds()
@@ -24,6 +25,7 @@ void load_sounds()
         SOUNDS.insert({s.first, sound});
     }
 
+    BG_MUSIC = LoadMusicStream("media/sounds/bg_music.mp3");
 }
 
 
@@ -31,6 +33,7 @@ void unload_sounds()
 {
     for (auto& s : SOUNDS)
         UnloadSound(s.second);
+    UnloadMusicStream(BG_MUSIC);
 
     CloseAudioDevice();
 }

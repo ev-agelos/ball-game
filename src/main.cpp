@@ -9,6 +9,7 @@
 #include "graphics.h"
 #include "sounds.h"
 
+extern Music BG_MUSIC;
 bool DEBUG = false;
 bool PAUSE = false;
 int FPS_COUNTER = 0;
@@ -32,6 +33,7 @@ int main()
 	InitWindow(SCREENWIDTH, SCREENHEIGHT, "Ball Game");
 	SetTargetFPS(60);
     load_sounds();
+    PlayMusicStream(BG_MUSIC);
 
     float dt;
     Player p1;
@@ -40,6 +42,7 @@ int main()
 
     while (!WindowShouldClose())
 	{
+        UpdateMusicStream(BG_MUSIC);
         if (IsKeyPressed(KEY_P))
             PAUSE = !PAUSE;
         if (IsKeyPressed(KEY_R))
