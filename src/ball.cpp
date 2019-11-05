@@ -1,3 +1,4 @@
+#include <cmath>
 #include <raylib.h>
 #include <raymath.h>
 #include "ball.h"
@@ -100,7 +101,7 @@ void Ball::update(float dt)
     }
     else
     {
-        velocity = Vector2Scale(velocity, std::pow(friction_c, dt));
+        velocity = Vector2Scale(velocity, pow(friction_c, dt));
         if (abs(velocity.x) < 0.1)
             velocity.x = 0;
         if (abs(velocity.y) < 0.1)

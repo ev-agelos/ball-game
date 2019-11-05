@@ -1,3 +1,4 @@
+#include <cmath>
 #include <raylib.h>
 #include <raymath.h>
 #include "player.h"
@@ -151,7 +152,7 @@ void Player::update(float& dt, Ball& ball)
     if (acceleration.x or acceleration.y)
         set_velocity();
     else if (velocity.x or velocity.y)
-        velocity = Vector2Scale(velocity, std::pow(deceleration_factor, dt));
+        velocity = Vector2Scale(velocity, pow(deceleration_factor, dt));
 
     update_pos(Vector2Scale(velocity, dt));
 
