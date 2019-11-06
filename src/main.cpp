@@ -28,6 +28,19 @@ void reset(Player& p, Bot& bot, Ball& ball)
 }
 
 
+void read_user_input(Player& p1, Bot& bot, Ball& ball)
+{
+    if (IsKeyPressed(KEY_P))
+        PAUSE = !PAUSE;
+    if (IsKeyPressed(KEY_R))
+        reset(p1, bot, ball);
+    if (IsKeyPressed(KEY_F))
+        DEBUG = !DEBUG;
+    if (IsKeyDown(KEY_D) and p1.power < p1.max_power)
+        p1.power += 100;
+}
+
+
 int main()
 {
 	InitWindow(SCREENWIDTH, SCREENHEIGHT, "Ball Game");
@@ -43,12 +56,7 @@ int main()
     while (!WindowShouldClose())
 	{
         UpdateMusicStream(BG_MUSIC);
-        if (IsKeyPressed(KEY_P))
-            PAUSE = !PAUSE;
-        if (IsKeyPressed(KEY_R))
-            reset(p1, bot, ball);
-        if (IsKeyPressed(KEY_F))
-            DEBUG = !DEBUG;
+        read_user_input(p1, bot, ball);
 
         if (PAUSE)
             FPS_COUNTER++;

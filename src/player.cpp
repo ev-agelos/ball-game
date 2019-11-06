@@ -155,9 +155,6 @@ void Player::update(float& dt, Ball& ball)
         velocity = Vector2Scale(velocity, pow(deceleration_factor, dt));
 
     update_pos(Vector2Scale(velocity, dt));
-
-    if (IsKeyDown(KEY_D) && power < max_power)
-        power += 100;
 }
 
 
