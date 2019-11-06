@@ -12,7 +12,6 @@
 extern Music BG_MUSIC;
 bool DEBUG = false;
 bool PAUSE = false;
-int FPS_COUNTER = 0;
 bool IS_GOAL = false;
 
 extern const int SCREENWIDTH = 800;
@@ -59,9 +58,7 @@ int main()
         UpdateMusicStream(BG_MUSIC);
         read_user_input(p1, bot, ball);
 
-        if (PAUSE)
-            FPS_COUNTER++;
-        else
+        if (not PAUSE)
         {
             play_crowd_sound();
             dt = GetFrameTime();

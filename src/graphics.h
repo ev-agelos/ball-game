@@ -10,7 +10,6 @@ extern const int SCREENWIDTH;
 extern const int SCREENHEIGHT;
 extern bool DEBUG;
 extern bool PAUSE;
-extern int FPS_COUNTER;
 
 extern const int TOP_BOUND = 20;
 extern const int BOTTOM_BOUND = SCREENHEIGHT - TOP_BOUND;
@@ -25,10 +24,13 @@ static const int POWERBAR_WIDTH = 100;
 static const int POWERBAR_HEIGHT = 12;
 static const int POWERBAR_LR_OFFSET = 50;
 static const int POWERBAR_BOTTOM_OFFSET = 15;
+static int FPS_COUNTER;
 
 
 void draw(const Player& p, const Bot& bot, const Ball& ball, int& left_score, int& right_score)
 {
+    if (PAUSE)
+        FPS_COUNTER++;
     BeginDrawing();
     ClearBackground(BLACK);
 
