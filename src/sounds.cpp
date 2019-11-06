@@ -4,6 +4,8 @@
 #include "raylib.h"
 #include "sounds.h"
 
+extern bool IS_GOAL;
+extern bool PAUSE;
 std::map<std::string, Sound> SOUNDS;
 Music BG_MUSIC;
 
@@ -26,6 +28,7 @@ void load_sounds()
     }
 
     BG_MUSIC = LoadMusicStream("media/sounds/bg_music.mp3");
+    PlayMusicStream(BG_MUSIC);
 }
 
 
@@ -41,17 +44,25 @@ void unload_sounds()
 
 void play_crowd_sound()
 {
-    if (!IsSoundPlaying(SOUNDS["crowd"]))
+    if (not IsSoundPlaying(SOUNDS["crowd"]))
         PlaySound(SOUNDS["crowd"]);
-}
-
-void play_crowd_cheering()
-{
-    PlaySound(SOUNDS["crowd_cheering"]);
 }
 
 
 void play_ball_sound()
 {
     PlaySound(SOUNDS["ball_sound"]);
+}
+
+
+void play_sounds()
+{
+    if (IsMusicPlaying(BG_MUSIC))
+        UpdateMusicStream(BG_MUSIC);
+
+    if (not PAUSE)
+        play_crowd_sound();
+
+    if (IS_GOAL)
+        PlaySound(SOUNDS["crowd_cheering"]);
 }
