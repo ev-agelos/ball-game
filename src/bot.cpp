@@ -1,15 +1,14 @@
 #include "bot.h"
 
-extern const int LEFT_BOUND;
-extern const int RIGHT_BOUND;
-extern const int TOP_BOUND;
-extern const int BOTTOM_BOUND;
+extern Rectangle FIELD;
+extern Rectangle RIGHT_NET;
+
 
 
 void Bot::setup()
 {
-    rec.x = GetRandomValue(((RIGHT_BOUND - LEFT_BOUND) / 2) + LEFT_BOUND, RIGHT_BOUND - rec.width);
-    rec.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND - rec.height);
+    rec.x = GetRandomValue(FIELD.width / 2 + FIELD.x, RIGHT_NET.x - rec.width);
+    rec.y = GetRandomValue(FIELD.y, FIELD.y + FIELD.height - rec.height);
     velocity = {0, 0};
     power = 0;
 }

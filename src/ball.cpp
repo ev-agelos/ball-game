@@ -7,13 +7,9 @@
 #include "utils.h"
 #include "sounds.h"
 
-extern const int TOP_BOUND;
-extern const int BOTTOM_BOUND;
-extern const int LEFT_BOUND;
-extern const int RIGHT_BOUND;
-extern const int GOALPOST_THICKNESS;
-extern const float GOALPOST_HEIGHT_START;
-extern const float GOALPOST_HEIGHT_END;
+extern Rectangle FIELD;
+extern Rectangle LEFT_NET;
+extern Rectangle RIGHT_NET;
 extern bool IS_GOAL;
 
 
@@ -32,8 +28,8 @@ Ball::Ball()
 
 void Ball::setup()
 {
-    position.x = ((RIGHT_BOUND - LEFT_BOUND) / 2.f) + LEFT_BOUND;
-    position.y = ((BOTTOM_BOUND - TOP_BOUND) / 2.f) + TOP_BOUND;
+    position.x = ((FIELD.x + FIELD.width) / 2.f) + FIELD.x;
+    position.y = FIELD.height / 2.f + FIELD.y;
     velocity = {0, 0};
     controlled_by = nullptr;
 }
@@ -43,19 +39,20 @@ void Ball::set_x(float val)
 {
     last_position.x = position.x;
     // ball is in limits
-    if (((val - radius) > LEFT_BOUND) && ((val + radius) < RIGHT_BOUND))
+    if (((val - radius) > FIELD.x) and ((val + radius) < FIELD.x + FIELD.width))
     {
         position.x = val;
         return;
     }
 
     // hit vertical wall else goal
-    if (position.y < (GOALPOST_HEIGHT_START + GOALPOST_THICKNESS) || position.y > GOALPOST_HEIGHT_END)
+    if (position.y < LEFT_NET.y or position.y > LEFT_NET.y + LEFT_NET.height)
         velocity.x *= -1;
     else
     {
         position.x = val;
-        if (not IS_GOAL and (position.x < LEFT_BOUND or position.x > RIGHT_BOUND))
+        if (not IS_GOAL and (CheckCollisionPointRec(Vector2{position.x - radius, position.y}, LEFT_NET)
+                             or CheckCollisionPointRec(Vector2{position.x + radius, position.y}, RIGHT_NET)))
             IS_GOAL = true;
     }
     controlled_by = nullptr;
@@ -67,7 +64,7 @@ void Ball::set_y(float val)
     last_position.y = position.y;
 
     // ball is in limits
-    if (((val - radius) > TOP_BOUND) && ((val + radius) < BOTTOM_BOUND))
+    if (((val - radius) > FIELD.y) && ((val + radius) < FIELD.y + FIELD.height))
     {
         position.y = val;
         return;

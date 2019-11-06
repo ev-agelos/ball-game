@@ -5,11 +5,8 @@
 #include "ball.h"
 #include "utils.h"
 
-extern const int TOP_BOUND;
-extern const int BOTTOM_BOUND;
-extern const int LEFT_BOUND;
-extern const int RIGHT_BOUND;
-
+extern Rectangle FIELD;
+extern Rectangle RIGHT_NET;
 static const int APPROACH_RADIUS = 30;
 
 
@@ -31,8 +28,8 @@ Player::Player(const float max_speed)
 
 void Player::setup()
 {
-    rec.x = GetRandomValue(LEFT_BOUND, ((RIGHT_BOUND - LEFT_BOUND - rec.width) / 2) + LEFT_BOUND);
-    rec.y = GetRandomValue(TOP_BOUND, BOTTOM_BOUND - rec.height);
+    rec.x = GetRandomValue(FIELD.x, FIELD.width / 2 + FIELD.x - rec.width);
+    rec.y = GetRandomValue(FIELD.y, FIELD.y + FIELD.height - rec.height);
     velocity = {0, 0};
     power = 0;
 }
@@ -43,11 +40,11 @@ void Player::update_pos(const Vector2& v)
     last_position = {rec.x, rec.y};
 
     float new_x = rec.x + v.x;
-    if (new_x >= LEFT_BOUND && (new_x + rec.width) <= RIGHT_BOUND)
+    if (new_x >= FIELD.x and (new_x + rec.width) <= RIGHT_NET.x)
         rec.x = new_x;
 
     float new_y = rec.y + v.y;
-    if (new_y >= TOP_BOUND && (new_y + rec.height) <= BOTTOM_BOUND)
+    if (new_y >= FIELD.y and (new_y + rec.height) <= FIELD.y + FIELD.height)
         rec.y = new_y;
 }
 

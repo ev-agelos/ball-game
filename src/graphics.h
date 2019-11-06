@@ -12,15 +12,11 @@ extern bool IS_GOAL;
 extern bool DEBUG;
 extern bool PAUSE;
 
-extern const int TOP_BOUND = 20;
-extern const int BOTTOM_BOUND = SCREENHEIGHT - TOP_BOUND;
-extern const int LEFT_BOUND = 20;
-extern const int RIGHT_BOUND = SCREENWIDTH - LEFT_BOUND;
+Rectangle FIELD = {20, 20, SCREENWIDTH - 40.f, SCREENHEIGHT - 40.f};
+Rectangle LEFT_NET = {0, SCREENHEIGHT / 2.f - 50, 20, 100};
+Rectangle RIGHT_NET = {SCREENWIDTH - 20.f, SCREENHEIGHT / 2.f - 50, 20, 100};
 
-extern const int GOALPOST_THICKNESS = 10;
-extern const float GOALPOST_HEIGHT_START = SCREENHEIGHT / 2 - 50;
-extern const float GOALPOST_HEIGHT_END = SCREENHEIGHT / 2 + 50;
-
+const int GOALPOST_THICKNESS = 10;
 static const int POWERBAR_WIDTH = 100;
 static const int POWERBAR_HEIGHT = 12;
 static const int POWERBAR_LR_OFFSET = 50;
@@ -64,20 +60,20 @@ void draw(const Player& p, const Bot& bot, const Ball& ball)
     DrawRectangleLines(SCREENWIDTH - (POWERBAR_LR_OFFSET + POWERBAR_WIDTH), SCREENHEIGHT - POWERBAR_BOTTOM_OFFSET, POWERBAR_WIDTH, POWERBAR_HEIGHT, GRAY);
 
     // posts
-    DrawRectangle(0, GOALPOST_HEIGHT_START, 21, GOALPOST_THICKNESS, GRAY);
-    DrawRectangle(0, GOALPOST_HEIGHT_END, 21, GOALPOST_THICKNESS, GRAY);
-    DrawRectangle(SCREENWIDTH - 20, GOALPOST_HEIGHT_START, 21, GOALPOST_THICKNESS, GRAY);
-    DrawRectangle(SCREENWIDTH - 20, GOALPOST_HEIGHT_END, 21, GOALPOST_THICKNESS, GRAY);
+    DrawRectangle(0, LEFT_NET.y - GOALPOST_THICKNESS, 21, GOALPOST_THICKNESS, GRAY);
+    DrawRectangle(0, LEFT_NET.y + LEFT_NET.height, 21, GOALPOST_THICKNESS, GRAY);
+    DrawRectangle(RIGHT_NET.x, RIGHT_NET.y - GOALPOST_THICKNESS, 21, GOALPOST_THICKNESS, GRAY);
+    DrawRectangle(RIGHT_NET.x, RIGHT_NET.y + RIGHT_NET.height, 21, GOALPOST_THICKNESS, GRAY);
 
     // field borders
     DrawLineEx(Vector2{20, 20}, Vector2{SCREENWIDTH - 20.f, 20}, 1, GRAY);  // top line
     DrawLineEx(Vector2{20, SCREENHEIGHT - 20.f}, Vector2{SCREENWIDTH - 20.f, SCREENHEIGHT - 20.f}, 1, GRAY);  // bottom line
 
-    DrawLineEx(Vector2{20, 20}, Vector2{20, GOALPOST_HEIGHT_START}, 1, GRAY);  // top left vertical
-    DrawLineEx(Vector2{SCREENWIDTH - 20.f, 20}, Vector2{SCREENWIDTH - 20.f, GOALPOST_HEIGHT_START}, 1, GRAY);  // top right vertical
+    DrawLineEx(Vector2{FIELD.x, FIELD.y}, Vector2{FIELD.x, LEFT_NET.y}, 1, GRAY);  // top left vertical
+    DrawLineEx(Vector2{FIELD.x + FIELD.width, FIELD.y}, Vector2{RIGHT_NET.x, RIGHT_NET.y}, 1, GRAY);  // top right vertical
 
-    DrawLineEx(Vector2{20, GOALPOST_HEIGHT_END + GOALPOST_THICKNESS}, Vector2{20, SCREENHEIGHT - 20.f}, 1, GRAY);  // bottom left vertical
-    DrawLineEx(Vector2{SCREENWIDTH - 20.f, GOALPOST_HEIGHT_END + GOALPOST_THICKNESS},Vector2{SCREENWIDTH - 20.f, SCREENHEIGHT - 20.f}, 1, GRAY);  // bottom right vertical
+    DrawLineEx(Vector2{FIELD.x, LEFT_NET.y + LEFT_NET.height}, Vector2{FIELD.x, FIELD.y + FIELD.height}, 1, GRAY);  // bottom left vertical
+    DrawLineEx(Vector2{RIGHT_NET.x, RIGHT_NET.y + RIGHT_NET.height}, Vector2{RIGHT_NET.x, FIELD.y + FIELD.height}, 1, GRAY);  // bottom right vertical
 
     // FPS
     DrawFPS(1, 1);
