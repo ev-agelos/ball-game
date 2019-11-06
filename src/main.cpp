@@ -43,8 +43,6 @@ int main()
 	SetTargetFPS(60);
     load_sounds();
 
-    int left_score = 0;
-    int right_score = 0;
     float dt;
     Player p1;
     Bot bot;
@@ -63,15 +61,11 @@ int main()
 
             check_collisions(dt, ball, p1);
         }
-        draw(p1, bot, ball, left_score, right_score);
+        draw(p1, bot, ball);
         play_sounds();
 
         if (IS_GOAL)
         {
-            if (ball.position.x < SCREENWIDTH / 2)
-                right_score += 1;
-            else
-                left_score += 1;
             reset(p1, bot, ball);
             IS_GOAL = false;
         }

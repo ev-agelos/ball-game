@@ -8,6 +8,7 @@
 
 extern const int SCREENWIDTH;
 extern const int SCREENHEIGHT;
+extern bool IS_GOAL;
 extern bool DEBUG;
 extern bool PAUSE;
 
@@ -25,17 +26,28 @@ static const int POWERBAR_HEIGHT = 12;
 static const int POWERBAR_LR_OFFSET = 50;
 static const int POWERBAR_BOTTOM_OFFSET = 15;
 static int FPS_COUNTER;
+static int LEFT_SCORE = 0;
+static int RIGHT_SCORE = 0;
 
 
-void draw(const Player& p, const Bot& bot, const Ball& ball, int& left_score, int& right_score)
+void draw(const Player& p, const Bot& bot, const Ball& ball)
 {
     if (PAUSE)
         FPS_COUNTER++;
+
+    if (IS_GOAL)
+    {
+        if (ball.position.x < SCREENWIDTH / 2)
+            RIGHT_SCORE += 1;
+        else
+            LEFT_SCORE += 1;
+    }
+
     BeginDrawing();
     ClearBackground(BLACK);
 
     // Score
-    DrawText(FormatText("Score: %01i - %01i", left_score, right_score), SCREENWIDTH/2 - 60, SCREENHEIGHT - 18, 19, RED);
+    DrawText(FormatText("Score: %01i - %01i", LEFT_SCORE, RIGHT_SCORE), SCREENWIDTH/2 - 60, SCREENHEIGHT - 18, 19, RED);
 
     // players and ball
     DrawRectangleRec(p.rec, GREEN);
