@@ -14,8 +14,7 @@ extern const int RIGHT_BOUND;
 extern const int GOALPOST_THICKNESS;
 extern const float GOALPOST_HEIGHT_START;
 extern const float GOALPOST_HEIGHT_END;
-extern int LEFT_SCORE;
-extern int RIGHT_SCORE;
+extern bool IS_GOAL;
 
 
 Ball::Ball()
@@ -25,8 +24,7 @@ Ball::Ball()
     radius(5.f),
     position{0, 0},
     velocity{0, 0},
-    controlled_by(nullptr),
-    crossed_net(false)
+    controlled_by(nullptr)
 {
     setup();
 }
@@ -37,7 +35,6 @@ void Ball::setup()
     position.x = ((RIGHT_BOUND - LEFT_BOUND) / 2.f) + LEFT_BOUND;
     position.y = ((BOTTOM_BOUND - TOP_BOUND) / 2.f) + TOP_BOUND;
     velocity = {0, 0};
-    crossed_net = false;
     controlled_by = nullptr;
 }
 
@@ -58,19 +55,8 @@ void Ball::set_x(float val)
     else
     {
         position.x = val;
-        if (!crossed_net)
-        {
-            if (position.x < LEFT_BOUND)
-            {
-                RIGHT_SCORE += 1;
-                crossed_net = true;
-            }
-            else if (position.x > RIGHT_BOUND)
-            {
-                LEFT_SCORE += 1;
-                crossed_net = true;
-            }
-        }
+        if (not IS_GOAL and (position.x < LEFT_BOUND or position.x > RIGHT_BOUND))
+            IS_GOAL = true;
     }
     controlled_by = nullptr;
 }

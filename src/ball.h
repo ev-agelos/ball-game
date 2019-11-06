@@ -17,7 +17,6 @@ public:
     Vector2 position;
     Vector2 velocity;
     Player *controlled_by;
-    bool crossed_net;
     Vector2 last_position;
     void setup();
     void roll(const Vector2& kick_direction, float power);

@@ -11,8 +11,6 @@ extern const int SCREENHEIGHT;
 extern bool DEBUG;
 extern bool PAUSE;
 extern int FPS_COUNTER;
-extern int LEFT_SCORE;
-extern int RIGHT_SCORE;
 
 extern const int TOP_BOUND = 20;
 extern const int BOTTOM_BOUND = SCREENHEIGHT - TOP_BOUND;
@@ -29,13 +27,13 @@ static const int POWERBAR_LR_OFFSET = 50;
 static const int POWERBAR_BOTTOM_OFFSET = 15;
 
 
-void draw(const Player& p, const Bot& bot, const Ball& ball)
+void draw(const Player& p, const Bot& bot, const Ball& ball, int& left_score, int& right_score)
 {
     BeginDrawing();
     ClearBackground(BLACK);
 
     // Score
-    DrawText(FormatText("Score: %01i - %01i", LEFT_SCORE, RIGHT_SCORE), SCREENWIDTH/2 - 60, SCREENHEIGHT - 18, 19, RED);
+    DrawText(FormatText("Score: %01i - %01i", left_score, right_score), SCREENWIDTH/2 - 60, SCREENHEIGHT - 18, 19, RED);
 
     // players and ball
     DrawRectangleRec(p.rec, GREEN);

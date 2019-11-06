@@ -13,11 +13,10 @@ extern Music BG_MUSIC;
 bool DEBUG = false;
 bool PAUSE = false;
 int FPS_COUNTER = 0;
+bool IS_GOAL = false;
 
 extern const int SCREENWIDTH = 800;
 extern const int SCREENHEIGHT = 450;
-int LEFT_SCORE = 0;
-int RIGHT_SCORE = 0;
 
 
 void reset(Player& p, Bot& bot, Ball& ball)
@@ -48,6 +47,8 @@ int main()
     load_sounds();
     PlayMusicStream(BG_MUSIC);
 
+    int left_score = 0;
+    int right_score = 0;
     float dt;
     Player p1;
     Bot bot;
@@ -71,13 +72,18 @@ int main()
             check_collisions(dt, ball, p1);
         }
 
-        draw(p1, bot, ball);
-
-        if (ball.crossed_net)
+        if (IS_GOAL)
         {
             play_crowd_cheering();
+            if (ball.position.x < SCREENWIDTH / 2)
+                right_score += 1;
+            else
+                left_score += 1;
             reset(p1, bot, ball);
+            IS_GOAL = false;
         }
+
+        draw(p1, bot, ball, left_score, right_score);
     }
 
     unload_sounds();
