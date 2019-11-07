@@ -108,27 +108,11 @@ void Player::kick(Ball& ball)
 
 void Player::handle_movement_control(float& dt, Ball& ball)
 {
-    if (!input.x and !input.y)
-    {
-        Vector2 nearest = get_nearest_rec_point(ball.position, rec);
-        float distance = Vector2Distance(ball.position, nearest) - ball.radius - 1;  // -1 so they don't collide
-        if (distance < APPROACH_RADIUS)
-        {
-            float speed = distance / APPROACH_RADIUS * max_speed;
-            Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
-            Vector2 desired_dir = Vector2Normalize(Vector2Subtract(ball.position, rec_center));
-            Vector2 desired_velocity = Vector2Scale(desired_dir, speed * dt);
-            acceleration = Vector2Subtract(desired_velocity, velocity);
-        }
-    }
-    else
-    {
-        Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
-        Vector2 diff = Vector2Subtract(ball.position, rec_center);
-        Vector2 desired_dir = Vector2Normalize(diff);
-        Vector2 desired_velocity = Vector2Scale(desired_dir, max_speed);
-        acceleration = Vector2Subtract(desired_velocity, velocity);
-    }
+    Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
+    Vector2 diff = Vector2Subtract(ball.position, rec_center);
+    Vector2 desired_dir = Vector2Normalize(diff);
+    Vector2 desired_velocity = Vector2Scale(desired_dir, max_speed);
+    acceleration = Vector2Subtract(desired_velocity, velocity);
     acceleration = Vector2Scale(acceleration, dt);
 }
 
@@ -137,7 +121,7 @@ void Player::update(float& dt, Ball& ball)
 {
     read_user_input();
 
-    if (ball.controlled_by == this)
+    if (ball.controlled_by == this and (input.x or input.y))
     {
         handle_movement_control(dt, ball);
         limit_vector(acceleration, acceleration_factor);
@@ -149,8 +133,17 @@ void Player::update(float& dt, Ball& ball)
     if (acceleration.x or acceleration.y)
         set_velocity();
     else if (velocity.x or velocity.y)
-        velocity = Vector2Scale(velocity, pow(deceleration_factor, dt));
-
+    {
+        Vector2 nearest = get_nearest_rec_point(ball.position, rec);
+        float distance = Vector2Distance(ball.position, nearest) - ball.radius - 1;  // -1 so they don't collide
+        if (distance < APPROACH_RADIUS)
+        {
+            Vector2 desired_dir = Vector2Subtract(ball.position, nearest);
+            velocity = Vector2Scale(Vector2Normalize(desired_dir), distance * max_speed / APPROACH_RADIUS);
+        }
+        else
+            velocity = Vector2Scale(velocity, pow(deceleration_factor, dt));
+    }
     update_pos(Vector2Scale(velocity, dt));
 }
 
