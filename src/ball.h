@@ -16,7 +16,6 @@ public:
     float radius;
     Vector2 position;
     Vector2 velocity;
-    Player *controlled_by;
     Vector2 last_position;
     void setup();
     void roll(const Vector2& kick_direction, float power);

@@ -15,6 +15,7 @@ Player::Player(const float max_speed)
     acceleration{0, 0},
     acceleration_factor(300.f),
     deceleration_factor(0.1f),
+    controls_ball(false),
     input{0, 0},
     max_speed(max_speed),
     rec{0, 0, 20, 20},
@@ -32,6 +33,7 @@ void Player::setup()
     rec.y = GetRandomValue(FIELD.y, FIELD.y + FIELD.height - rec.height);
     velocity = {0, 0};
     power = 0;
+    controls_ball = false;
 }
 
 
@@ -100,6 +102,7 @@ void Player::kick(Ball& ball)
     {
         ball.kick(kick_direction, power);
         power = 0;
+        controls_ball = false;
     }
     else
         ball.roll(kick_direction, 150);
@@ -121,7 +124,7 @@ void Player::update(float& dt, Ball& ball)
 {
     read_user_input();
 
-    if (ball.controlled_by == this and (input.x or input.y))
+    if (controls_ball and (input.x or input.y))
     {
         handle_movement_control(dt, ball);
         limit_vector(acceleration, acceleration_factor);
@@ -172,7 +175,7 @@ void Player::handle_collision_response(Ball& ball, const Vector2& velocity, floa
     {
         set_velocity();
         kick(ball);
-        ball.controlled_by = this;
+        controls_ball = true;
         return;
     }
     rec.x = last_position.x;
@@ -184,6 +187,6 @@ void Player::handle_collision_response(Ball& ball, const Vector2& velocity, floa
     if ((abs(ball.velocity.x) <= max_speed and abs(this->velocity.y) <= max_speed) and (input.x or input.y))
     {
         kick(ball);
-        ball.controlled_by = this;
+        controls_ball = true;
     }
 }

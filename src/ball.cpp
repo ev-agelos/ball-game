@@ -19,8 +19,7 @@ Ball::Ball()
     acceleration{0, 0},
     radius(5.f),
     position{0, 0},
-    velocity{0, 0},
-    controlled_by(nullptr)
+    velocity{0, 0}
 {
     setup();
 }
@@ -31,7 +30,6 @@ void Ball::setup()
     position.x = ((FIELD.x + FIELD.width) / 2.f) + FIELD.x;
     position.y = FIELD.height / 2.f + FIELD.y;
     velocity = {0, 0};
-    controlled_by = nullptr;
 }
 
 
@@ -55,7 +53,6 @@ void Ball::set_x(float val)
                              or CheckCollisionPointRec(Vector2{position.x + radius, position.y}, RIGHT_NET)))
             IS_GOAL = true;
     }
-    controlled_by = nullptr;
 }
 
 
@@ -71,7 +68,6 @@ void Ball::set_y(float val)
     }
     // hit horizontal wall or goal
     velocity.y *= -1;
-    controlled_by = nullptr;
 }
 
 
@@ -106,7 +102,6 @@ void Ball::roll(const Vector2& kick_direction, float power)
 void Ball::kick(const Vector2& kick_direction, float power)
 {
     roll(kick_direction, power);
-    controlled_by = nullptr;
     play_ball_sound();
 }
 
