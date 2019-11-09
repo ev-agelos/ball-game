@@ -2,3 +2,5 @@ build/
 *.o
 *.exe
 .ccls
+compile_flags.txt
+compile_commands.json

@@ -1,8 +1,9 @@
 #pragma once
 
 #include <raylib.h>
-#include "player.h"
-#include "ball.h"
+
+#include "player.hpp"
+#include "ball.hpp"
 
 
 class Bot : public Player

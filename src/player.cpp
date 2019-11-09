@@ -1,9 +1,10 @@
 #include <cmath>
 #include <raylib.h>
 #include <raymath.h>
-#include "player.h"
-#include "ball.h"
-#include "utils.h"
+
+#include "player.hpp"
+#include "ball.hpp"
+#include "utils.hpp"
 
 extern Rectangle FIELD;
 extern Rectangle RIGHT_NET;

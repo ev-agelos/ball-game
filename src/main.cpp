@@ -1,13 +1,13 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#include "player.h"
-#include "bot.h"
-#include "ball.h"
-#include "utils.h"
-#include "collisions.h"
-#include "graphics.h"
-#include "sounds.h"
+#include "player.hpp"
+#include "bot.hpp"
+#include "ball.hpp"
+#include "utils.hpp"
+#include "collisions.hpp"
+#include "graphics.hpp"
+#include "sounds.hpp"
 
 extern const int SCREENWIDTH = 800;
 extern const int SCREENHEIGHT = 450;

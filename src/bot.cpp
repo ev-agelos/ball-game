@@ -1,4 +1,4 @@
-#include "bot.h"
+#include "bot.hpp"
 
 extern Rectangle FIELD;
 extern Rectangle RIGHT_NET;

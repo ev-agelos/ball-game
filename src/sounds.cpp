@@ -2,7 +2,8 @@
 #include <string>
 
 #include "raylib.h"
-#include "sounds.h"
+
+#include "sounds.hpp"
 
 extern bool IS_GOAL;
 extern bool PAUSE;

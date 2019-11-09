@@ -3,10 +3,10 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#include "player.h"
-#include "bot.h"
-#include "ball.h"
-#include "utils.h"
+#include "player.hpp"
+#include "bot.hpp"
+#include "ball.hpp"
+#include "utils.hpp"
 
 
 static bool COLLISION = false;

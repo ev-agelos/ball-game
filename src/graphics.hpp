@@ -2,9 +2,10 @@
 
 #include "raylib.h"
 #include "raymath.h"
-#include "player.h"
-#include "bot.h"
-#include "ball.h"
+
+#include "player.hpp"
+#include "bot.hpp"
+#include "ball.hpp"
 
 extern const int SCREENWIDTH;
 extern const int SCREENHEIGHT;

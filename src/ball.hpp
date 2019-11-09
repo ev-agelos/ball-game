@@ -1,8 +1,9 @@
 #pragma once
 
 #include <raylib.h>
-#include "player.h"
-#include "bot.h"
+
+#include "player.hpp"
+#include "bot.hpp"
 
 
 class Ball {
