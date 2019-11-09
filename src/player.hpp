@@ -13,9 +13,8 @@ private:
     bool controls_ball;
     void update_pos(const Vector2& v);
     void read_user_input();
-    void apply_acceleration(float& dt);
+    void apply_acceleration(const Vector2& ball_pos);
     void set_velocity();
-    void handle_movement_control(float& dt, Ball& ball);
     const Vector2 get_kick_direction(const Vector2& ball_pos) const;
 public:
     Vector2 acceleration;

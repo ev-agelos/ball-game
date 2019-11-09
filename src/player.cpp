@@ -77,12 +77,19 @@ void Player::read_user_input()
 }
 
 
-void Player::apply_acceleration(float& dt)
+void Player::apply_acceleration(const Vector2& ball_pos)
 {
-    if (input.x or input.y)
-        acceleration = Vector2Scale(input, acceleration_factor * dt);
+    if (controls_ball)
+    {
+        Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
+        Vector2 diff = Vector2Subtract(ball_pos, rec_center);
+        Vector2 desired_dir = Vector2Normalize(diff);
+        Vector2 desired_velocity = Vector2Scale(desired_dir, max_speed);
+        acceleration = Vector2Subtract(desired_velocity, velocity);
+    }
     else
-        acceleration = {0, 0};
+        acceleration = Vector2Scale(input, acceleration_factor);
+    limit_vector(acceleration, acceleration_factor);
 }
 
 
@@ -110,28 +117,17 @@ void Player::kick(Ball& ball)
 }
 
 
-void Player::handle_movement_control(float& dt, Ball& ball)
-{
-    Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
-    Vector2 diff = Vector2Subtract(ball.position, rec_center);
-    Vector2 desired_dir = Vector2Normalize(diff);
-    Vector2 desired_velocity = Vector2Scale(desired_dir, max_speed);
-    acceleration = Vector2Subtract(desired_velocity, velocity);
-    acceleration = Vector2Scale(acceleration, dt);
-}
-
-
 void Player::update(float& dt, Ball& ball)
 {
     read_user_input();
 
-    if (controls_ball and (input.x or input.y))
+    if (input.x or input.y)
     {
-        handle_movement_control(dt, ball);
-        limit_vector(acceleration, acceleration_factor);
+        apply_acceleration(ball.position);
+        acceleration = Vector2Scale(acceleration, dt);
     }
     else
-        apply_acceleration(dt);
+        acceleration = {0, 0};
 
     // change in velocity
     if (acceleration.x or acceleration.y)
