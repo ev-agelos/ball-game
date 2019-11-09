@@ -138,12 +138,15 @@ void Player::update(float& dt, Ball& ball)
         set_velocity();
     else if (velocity.x or velocity.y)
     {
-        Vector2 nearest = get_nearest_rec_point(ball.position, rec);
-        float distance = Vector2Distance(ball.position, nearest) - ball.radius - 1;  // -1 so they don't collide
-        if (distance < APPROACH_RADIUS)
+        if (controls_ball)
         {
-            Vector2 desired_dir = Vector2Subtract(ball.position, nearest);
-            velocity = Vector2Scale(Vector2Normalize(desired_dir), distance * max_speed / APPROACH_RADIUS);
+            Vector2 nearest = get_nearest_rec_point(ball.position, rec);
+            float distance = Vector2Distance(ball.position, nearest) - ball.radius - 1;  // -1 so they don't collide
+            if (distance < APPROACH_RADIUS)
+            {
+                Vector2 desired_dir = Vector2Subtract(ball.position, nearest);
+                velocity = Vector2Scale(Vector2Normalize(desired_dir), distance * max_speed / APPROACH_RADIUS);
+            }
         }
         else
             velocity = Vector2Scale(velocity, pow(deceleration_factor, dt));
