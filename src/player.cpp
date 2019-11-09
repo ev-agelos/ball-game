@@ -13,10 +13,10 @@ static const int APPROACH_RADIUS = 30;
 
 Player::Player(const float max_speed)
     :
-    acceleration{0, 0},
     acceleration_factor(300.f),
     deceleration_factor(0.1f),
     controls_ball(false),
+    acceleration{0, 0},
     input{0, 0},
     max_speed(max_speed),
     rec{0, 0, 20, 20},

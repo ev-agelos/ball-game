@@ -8,7 +8,6 @@ class Ball;
 class Player
 {
 private:
-    Vector2 acceleration;
     const float acceleration_factor;
     const float deceleration_factor;
     bool controls_ball;
@@ -19,6 +18,7 @@ private:
     void handle_movement_control(float& dt, Ball& ball);
     const Vector2 get_kick_direction(const Vector2& ball_pos) const;
 public:
+    Vector2 acceleration;
     Vector2 input;
     Player(const float max_speed=200.f);
     const float max_speed;

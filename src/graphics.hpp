@@ -1,7 +1,11 @@
 #pragma once
 
+#include <string>
+
 #include "raylib.h"
 #include "raymath.h"
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
 
 #include "player.hpp"
 #include "bot.hpp"
@@ -86,8 +90,12 @@ void draw(const Player& p, const Bot& bot, const Ball& ball)
     // Forces for debugging purposes
     if (DEBUG)
     {
+        GuiProgressBar(Rectangle{40, SCREENHEIGHT - 50.f, 100, 10}, "Acc", std::to_string(Vector2Length(p.acceleration)).c_str(), Vector2Length(p.acceleration), 0, p.max_speed);
+        GuiProgressBar(Rectangle{40, SCREENHEIGHT - 40.f, 100, 10}, "Vel", "", Vector2Length(p.velocity), 0, p.max_speed);
         DrawCircle(p.rec.x + p.rec.width / 2, p.rec.y + p.rec.height / 2, 2, RED);
         DrawCircle(ball.position.x, ball.position.y, 2, RED);
+        float p_mag = Vector2Length(p.input) * 2;
+        DrawLineV({p.rec.x + p.rec.width / 2, p.rec.y + p.rec.height/2}, {p.rec.x + p.rec.width / 2 + (p_mag * p.velocity.x), p.rec.y + p.rec.height / 2 + (p_mag * p.velocity.y)}, RED);
         float mag = Vector2Length(ball.velocity) * 2;
         DrawLineV(ball.position, {ball.position.x + (mag * ball.velocity.x), ball.position.y + (mag * ball.velocity.y)}, RED);
     }
