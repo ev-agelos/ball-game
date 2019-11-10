@@ -9,7 +9,7 @@
 #include "utils.hpp"
 
 
-static bool COLLISION = false;
+bool COLLISION = false;
 
 
 float get_penetration_distance(const Rectangle& rec, const Vector2& ball_pos, const float& ball_radius)
@@ -37,12 +37,12 @@ void check_collisions(const float& dt, Ball& ball, Player& p)
 
         if (CheckCollisionCircleRec(ball_pos, ball.radius, p_rec))
         {
+            if (COLLISION)
+                return;
             float penetration_distance = get_penetration_distance(p_rec, ball_pos, ball.radius);
             if (penetration_distance < 0)
                 continue;
 
-            if (COLLISION)
-                return;
             float total_dt = counter * dt / steps;
 
             float total_length = Vector2Length(Vector2Scale(p_velocity_step, counter));
@@ -54,7 +54,6 @@ void check_collisions(const float& dt, Ball& ball, Player& p)
 
             p.handle_collision_response(ball, p_velocity, time);
             ball.handle_collision_response(p, Vector2Divide(ball_velocity, total_dt), total_dt);
-            COLLISION = true;
             return;
         }
     }

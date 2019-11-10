@@ -6,6 +6,7 @@
 #include "ball.hpp"
 #include "utils.hpp"
 
+extern bool COLLISION;
 extern Rectangle FIELD;
 extern Rectangle RIGHT_NET;
 static const int APPROACH_RADIUS = 30;
@@ -165,6 +166,7 @@ void Player::handle_collision_response(Ball& ball, const Vector2& velocity, floa
 {
     if (Vector2DotProduct(input, Vector2Normalize(this->velocity)) < -0.99)
     {
+        COLLISION = true;
         acceleration = Vector2Negate(acceleration);
         set_velocity();
         return;
@@ -174,6 +176,7 @@ void Player::handle_collision_response(Ball& ball, const Vector2& velocity, floa
     if (Vector2DotProduct(Vector2Normalize(this->velocity), input) < 0)
     {
         set_velocity();
+        COLLISION = true;
         kick(ball);
         controls_ball = true;
         return;
