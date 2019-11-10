@@ -96,6 +96,9 @@ void draw(const Player& p, const Bot& bot, const Ball& ball)
         DrawCircle(ball.position.x, ball.position.y, 2, RED);
         float p_mag = Vector2Length(p.input) * 2;
         DrawLineV({p.rec.x + p.rec.width / 2, p.rec.y + p.rec.height/2}, {p.rec.x + p.rec.width / 2 + (p_mag * p.velocity.x), p.rec.y + p.rec.height / 2 + (p_mag * p.velocity.y)}, RED);
+
+
+        DrawText(("Vel " + std::to_string(int(Vector2Length(ball.velocity)))).c_str(), SCREENWIDTH / 2.f - 10, SCREENHEIGHT - 40.f, 15, GREEN);
         float mag = Vector2Length(ball.velocity) * 2;
         DrawLineV(ball.position, {ball.position.x + (mag * ball.velocity.x), ball.position.y + (mag * ball.velocity.y)}, RED);
     }
