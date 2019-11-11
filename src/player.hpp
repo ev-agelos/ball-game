@@ -13,7 +13,8 @@ private:
     bool controls_ball;
     void update_pos(const Vector2& v);
     void read_user_input();
-    void apply_acceleration(const Vector2& ball_pos);
+    void add_acceleration(float dt, const Vector2& ball_pos);
+    void add_friction(float dt, const Vector2& ball_pos, float ball_radius);
     void set_velocity();
     const Vector2 get_kick_direction(const Vector2& ball_pos) const;
 public:
