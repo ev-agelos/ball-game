@@ -96,7 +96,7 @@ void Ball::update(float dt)
 void Ball::roll(const Vector2& kick_direction, float power)
 {
     Vector2 kick_velocity = Vector2Scale(kick_direction, power);
-    acceleration = Vector2Subtract(kick_velocity, velocity);
+    acceleration = Vector2Add(kick_velocity, velocity);
 }
 
 
