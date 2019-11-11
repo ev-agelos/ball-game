@@ -164,23 +164,10 @@ const Vector2 Player::get_kick_direction(const Vector2& ball_pos) const
 
 void Player::handle_collision_response(Ball& ball, const Vector2& velocity, float& dt)
 {
+    COLLISION = true;
     if (Vector2DotProduct(input, Vector2Normalize(this->velocity)) < -0.99)
-    {
-        COLLISION = true;
-        acceleration = Vector2Negate(acceleration);
-        set_velocity();
         return;
-    }
 
-    // ball will collide with player after the kick, so let player move freely
-    if (Vector2DotProduct(Vector2Normalize(this->velocity), input) < 0)
-    {
-        set_velocity();
-        COLLISION = true;
-        kick(ball);
-        controls_ball = true;
-        return;
-    }
     rec.x = last_position.x;
     rec.y = last_position.y;
     this->velocity = velocity;
