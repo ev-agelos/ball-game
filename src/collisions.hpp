@@ -20,7 +20,7 @@ float get_penetration_distance(const Rectangle& rec, const Vector2& ball_pos, co
 }
 
 
-void check_collisions(const float& dt, Ball& ball, Player& p)
+void check_collisions(float dt, Ball& ball, Player& p)
 {
     int steps = 10;
     Rectangle p_rec = {p.last_position.x, p.last_position.y, p.rec.width, p.rec.height};
@@ -43,17 +43,12 @@ void check_collisions(const float& dt, Ball& ball, Player& p)
             if (penetration_distance < 0)
                 continue;
 
-            float total_dt = counter * dt / steps;
-
-            float total_length = Vector2Length(Vector2Scale(p_velocity_step, counter));
-            float length = total_length - penetration_distance;
-            float time = length * total_dt / total_length;
-            Vector2 p_velocity = Vector2Scale(Vector2Normalize(p.velocity), length / time);
-
+            Vector2 vel = Vector2Scale(p_velocity_step, counter - 1);
+            Vector2 p_velocity = Vector2Divide(vel, dt);
             Vector2 ball_velocity = Vector2Scale(ball_velocity_step, counter);
+            p.handle_collision_response(ball, p_velocity, dt);
+            ball.handle_collision_response(p, Vector2Divide(ball_velocity, dt), dt);
 
-            p.handle_collision_response(ball, p_velocity, time);
-            ball.handle_collision_response(p, Vector2Divide(ball_velocity, total_dt), total_dt);
             return;
         }
     }
