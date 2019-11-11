@@ -112,7 +112,7 @@ void Player::kick(Ball& ball)
 }
 
 
-void Player::update(float& dt, Ball& ball)
+void Player::update(float dt, Ball& ball)
 {
     if (input.x or input.y)
         input = Vector2Normalize(input);
@@ -133,7 +133,7 @@ const Vector2 Player::get_kick_direction(const Vector2& ball_pos) const
 }
 
 
-void Player::handle_collision_response(Ball& ball, const Vector2& velocity, float& dt)
+void Player::handle_collision_response(Ball& ball, const Vector2& velocity, float dt)
 {
     COLLISION = true;
     if (Vector2DotProduct(input, Vector2Normalize(this->velocity)) < -0.99)
