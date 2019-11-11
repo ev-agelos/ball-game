@@ -34,6 +34,24 @@ void read_user_input(Player& p1, Bot& bot, Ball& ball)
         DEBUG = !DEBUG;
     if (IsKeyDown(KEY_D) and p1.power < p1.max_power)
         p1.power += 100;
+
+    if (IsKeyDown(KEY_RIGHT) and IsKeyDown(KEY_LEFT))
+        p1.input.x = 0;
+    else if (IsKeyDown(KEY_RIGHT))
+        p1.input.x = 1;
+    else if (IsKeyDown(KEY_LEFT))
+        p1.input.x = -1;
+    else
+        p1.input.x = 0;
+
+    if (IsKeyDown(KEY_UP) and IsKeyDown(KEY_DOWN))
+        p1.input.y = 0;
+    else if (IsKeyDown(KEY_UP))
+        p1.input.y = -1;
+    else if (IsKeyDown(KEY_DOWN))
+        p1.input.y = 1;
+    else
+        p1.input.y = 0;
 }
 
 

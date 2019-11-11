@@ -1,5 +1,4 @@
 #include <cmath>
-#include <raylib.h>
 #include <raymath.h>
 
 #include "player.hpp"
@@ -50,31 +49,6 @@ void Player::update_pos(const Vector2& v)
     float new_y = rec.y + v.y;
     if (new_y >= FIELD.y and (new_y + rec.height) <= FIELD.y + FIELD.height)
         rec.y = new_y;
-}
-
-
-void Player::read_user_input()
-{
-    if (IsKeyDown(KEY_RIGHT) and IsKeyDown(KEY_LEFT))
-        input.x = 0;
-    else if (IsKeyDown(KEY_RIGHT))
-        input.x = 1;
-    else if (IsKeyDown(KEY_LEFT))
-        input.x = -1;
-    else
-        input.x = 0;
-
-    if (IsKeyDown(KEY_UP) and IsKeyDown(KEY_DOWN))
-        input.y = 0;
-    else if (IsKeyDown(KEY_UP))
-        input.y = -1;
-    else if (IsKeyDown(KEY_DOWN))
-        input.y = 1;
-    else
-        input.y = 0;
-
-    if (input.x or input.y)
-        input = Vector2Normalize(input);
 }
 
 
@@ -140,7 +114,8 @@ void Player::kick(Ball& ball)
 
 void Player::update(float& dt, Ball& ball)
 {
-    read_user_input();
+    if (input.x or input.y)
+        input = Vector2Normalize(input);
     add_acceleration(dt, ball.position);
     add_friction(dt, ball.position, ball.radius);
     velocity = limit_vector(velocity, max_speed);
