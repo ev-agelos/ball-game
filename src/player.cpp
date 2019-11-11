@@ -137,7 +137,10 @@ void Player::handle_collision_response(Ball& ball, const Vector2& velocity, floa
 {
     COLLISION = true;
     if (Vector2DotProduct(input, Vector2Normalize(this->velocity)) < -0.99)
+    {
+        kick(ball);
         return;
+    }
 
     rec.x = last_position.x;
     rec.y = last_position.y;
