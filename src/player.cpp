@@ -150,7 +150,7 @@ void Player::handle_collision_response(Ball& ball, const Vector2& velocity, floa
     update_pos(Vector2Scale(this->velocity, dt));
 
     // prevent getting control of the ball if it is moving too fast
-    if ((abs(ball.velocity.x) <= max_speed and abs(ball.velocity.y) <= max_speed) and (input.x or input.y))
+    if (abs(ball.velocity.x) <= max_speed and abs(ball.velocity.y) <= max_speed)
     {
         kick(ball);
         controls_ball = true;
