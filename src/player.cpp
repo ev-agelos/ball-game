@@ -60,16 +60,18 @@ void Player::add_acceleration(float dt, const Vector2& ball_pos)
         return;
     }
 
+    Vector2 direction;
     if (controls_ball)
     {
         Vector2 rec_center = {rec.x + rec.width / 2, rec.y + rec.height / 2};
         Vector2 diff = Vector2Subtract(ball_pos, rec_center);
-        Vector2 desired_dir = Vector2Normalize(diff);
-        Vector2 desired_velocity = Vector2Scale(desired_dir, max_speed);
-        acceleration = Vector2Subtract(desired_velocity, velocity);
+        direction = Vector2Normalize(diff);
     }
     else
-        acceleration = Vector2Scale(input, acceleration_factor);
+        direction = input;
+
+    acceleration = Vector2Scale(direction, acceleration_factor);
+
     limit_vector(acceleration, acceleration_factor);
     acceleration = Vector2Scale(acceleration, dt);
     velocity = Vector2Add(velocity, acceleration);
