@@ -16,8 +16,8 @@ void load_sounds()
     InitAudioDevice();
 
     std::pair<std::string, std::pair <std::string, float>> sound_files[3] = {
-        std::make_pair("crowd", std::make_pair("media/sounds/crowd01.wav", 0.05)),
-        std::make_pair("crowd_cheering", std::make_pair("media/sounds/crowd02.wav", 0.05)),
+        std::make_pair("crowd", std::make_pair("media/sounds/crowd.wav", 0.3)),
+        std::make_pair("crowd_cheering", std::make_pair("media/sounds/crowd.wav", 0.8f)),
         std::make_pair("ball_sound", std::make_pair("media/sounds/ballsound.wav", 1.f))
     };
 
