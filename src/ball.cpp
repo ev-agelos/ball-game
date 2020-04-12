@@ -97,13 +97,13 @@ void Ball::roll(const Vector2& kick_direction, float power)
 {
     Vector2 kick_velocity = Vector2Scale(kick_direction, power);
     acceleration = Vector2Add(kick_velocity, velocity);
+    play_ball_sound();
 }
 
 
 void Ball::kick(const Vector2& kick_direction, float power)
 {
     roll(kick_direction, power);
-    play_ball_sound();
 }
 
 
