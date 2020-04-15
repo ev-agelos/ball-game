@@ -8,7 +8,7 @@
 extern bool COLLISION;
 extern Rectangle FIELD;
 extern Rectangle RIGHT_NET;
-static const int APPROACH_RADIUS = 30;
+extern const int APPROACH_RADIUS = 30;
 
 
 Player::Player(const float max_speed)

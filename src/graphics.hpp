@@ -13,6 +13,7 @@
 
 extern const int SCREENWIDTH;
 extern const int SCREENHEIGHT;
+extern const int APPROACH_RADIUS;
 extern bool IS_GOAL;
 extern bool DEBUG;
 extern bool PAUSE;
@@ -90,6 +91,7 @@ void draw(const Player& p, const Bot& bot, const Ball& ball)
     // Forces for debugging purposes
     if (DEBUG)
     {
+        DrawCircleLines(ball.position.x, ball.position.y, APPROACH_RADIUS + ball.radius, WHITE);
         GuiProgressBar(Rectangle{40, SCREENHEIGHT - 50.f, 100, 10}, "Acc", std::to_string(Vector2Length(p.acceleration)).c_str(), Vector2Length(p.acceleration), 0, p.max_speed);
         GuiProgressBar(Rectangle{40, SCREENHEIGHT - 40.f, 100, 10}, "Vel", std::to_string(Vector2Length(p.velocity)).c_str(), Vector2Length(p.velocity), 0, p.max_speed);
         DrawCircle(p.rec.x + p.rec.width / 2, p.rec.y + p.rec.height / 2, 2, RED);
