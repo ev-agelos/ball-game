@@ -85,18 +85,20 @@ void Player::add_friction(float dt, const Vector2& ball_pos, float ball_radius)
 
     if (controls_ball)
     {
+        // when close to the ball and no input given, slow down towards the ball without colliding
         Vector2 nearest = get_nearest_rec_point(ball_pos, rec);
-        float distance = Vector2Distance(ball_pos, nearest) - ball_radius - 1;  // -1 so they don't collide
+        float distance = Vector2Distance(ball_pos, nearest) - ball_radius;
         if (distance < APPROACH_RADIUS)
         {
-            Vector2 desired_dir = Vector2Subtract(ball_pos, nearest);
-            velocity = Vector2Scale(Vector2Normalize(desired_dir), distance * max_speed / APPROACH_RADIUS);
-            // FIXME need to subtract here velocity- desired
+            // decelerate so it doesnt hit the ball
+            // deceleration formula: a = (v^2 - u^2) / (2*distance)
+            float deceleration = pow(Vector2Length(velocity), 2) / (2 * distance);
+            float temp = deceleration / Vector2Length(velocity);
+            velocity = Vector2Subtract(velocity, Vector2Scale(Vector2Normalize(velocity), temp));
+            return;
         }
     }
-    else
-        velocity = Vector2Scale(velocity, pow(deceleration_factor, dt));
-
+    velocity = Vector2Scale(velocity, pow(deceleration_factor, dt));
 }
 
 
