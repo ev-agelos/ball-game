@@ -4,8 +4,6 @@
 
 #include "raylib.h"
 #include "raymath.h"
-#define RAYGUI_IMPLEMENTATION
-#include "raygui.h"
 
 #include "player.hpp"
 #include "bot.hpp"
@@ -92,15 +90,23 @@ void draw(const Player& p, const Bot& bot, const Ball& ball)
     if (DEBUG)
     {
         DrawCircleLines(ball.position.x, ball.position.y, APPROACH_RADIUS + ball.radius, WHITE);
-        GuiProgressBar(Rectangle{40, SCREENHEIGHT - 50.f, 100, 10}, "Acc", std::to_string(Vector2Length(p.acceleration)).c_str(), Vector2Length(p.acceleration), 0, p.max_speed);
-        GuiProgressBar(Rectangle{40, SCREENHEIGHT - 40.f, 100, 10}, "Vel", std::to_string(Vector2Length(p.velocity)).c_str(), Vector2Length(p.velocity), 0, p.max_speed);
+        // Acceleration bar
+        DrawRectangleLines(40, SCREENHEIGHT - 50.f, p.max_speed, 10, WHITE);
+        DrawRectangle(40, SCREENHEIGHT - 50.f, Vector2Length(p.acceleration), 10, GREEN);
+        DrawText(("Acc: " + std::to_string(Vector2Length(p.acceleration))).c_str(), 40 + p.max_speed, SCREENHEIGHT - 50.f, 10, GREEN);
+
+        // Velocity bar
+        DrawRectangleLines(40, SCREENHEIGHT - 40.f, p.max_speed, 10, WHITE);
+        DrawRectangle(40, SCREENHEIGHT - 40.f, Vector2Length(p.velocity), 10, GREEN);
+        DrawText(("Vel: " + std::to_string(Vector2Length(p.velocity))).c_str(), 40 + p.max_speed, SCREENHEIGHT - 40.f, 10, GREEN);
+
         DrawCircle(p.rec.x + p.rec.width / 2, p.rec.y + p.rec.height / 2, 2, RED);
         DrawCircle(ball.position.x, ball.position.y, 2, RED);
         float p_mag = Vector2Length(p.input) * 2;
         DrawLineV({p.rec.x + p.rec.width / 2, p.rec.y + p.rec.height/2}, {p.rec.x + p.rec.width / 2 + (p_mag * p.velocity.x), p.rec.y + p.rec.height / 2 + (p_mag * p.velocity.y)}, RED);
 
 
-        DrawText(("Vel " + std::to_string(int(Vector2Length(ball.velocity)))).c_str(), SCREENWIDTH / 2.f - 10, SCREENHEIGHT - 40.f, 15, GREEN);
+        DrawText(("Ball Vel " + std::to_string(int(Vector2Length(ball.velocity)))).c_str(), SCREENWIDTH / 2.f - 10, SCREENHEIGHT - 40.f, 15, GREEN);
         float mag = Vector2Length(ball.velocity) * 2;
         DrawLineV(ball.position, {ball.position.x + (mag * ball.velocity.x), ball.position.y + (mag * ball.velocity.y)}, RED);
     }

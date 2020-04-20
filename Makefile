@@ -1,4 +1,4 @@
-build_command = clang++ -g -std=c++17 -Wall -Wextra -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP -I./src/ -isystem ./raygui/src
+build_command = clang++ -g -std=c++17 -Wall -Wextra -D_DEFAULT_SOURCE -DPLATFORM_DESKTOP -isystem -I./src/
 
 game.exe: build_dir build/main.o build/ball.o build/player.o build/bot.o build/sounds.o
 	$(build_command) -lraylib -o build/game.exe build/*.o
